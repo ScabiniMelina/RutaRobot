@@ -8,7 +8,6 @@ import java.util.List;
 public class RobotController {
     private Grid grid;
 
-
     public RobotController(Grid grid) {
         this.grid = grid;
     }
@@ -20,5 +19,4 @@ public class RobotController {
     public List<Position> getBestRoute() throws Exception {
         return grid.getBestRoute();
     }
-
 }
