@@ -11,6 +11,10 @@ public class Grid {
 
     public Grid(Cell[][] grid) {
         this.grid = grid;
-        this.observers =  new ArrayList<Observer>();
+        this.observers = new ArrayList<Observer>();
+    }
+
+    public void addObserver(Observer observer){
+        this.observers.add(observer);
     }
 }
