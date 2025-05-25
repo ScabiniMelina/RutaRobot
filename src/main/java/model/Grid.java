@@ -21,6 +21,10 @@ public class Grid {
         this.observers.add(observer);
     }
 
+    public int[][] getGrid(){
+        return this.grid;
+    }
+
     private void isValidGrid(int[][] grid) {
         hasValidSize(grid);
         hasValidNumber(grid);
