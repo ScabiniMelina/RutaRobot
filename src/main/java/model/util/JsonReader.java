@@ -5,9 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.stream.Collectors;
 
 public class JsonReader {
@@ -15,8 +13,14 @@ public class JsonReader {
     public void main() {
     }
 
-    public static int[][] readGridFromJSON(String filePath) throws IOException, JsonParseException {
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+    public static int[][] readGridFromJSON(String resourcePath) throws IOException, JsonParseException {
+
+        InputStream inputStream = JsonReader.class.getClassLoader().getResourceAsStream(resourcePath);
+        if (inputStream == null) {
+            throw new IOException("Resource not found: " + resourcePath);
+        }
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
             String content = reader.lines().collect(Collectors.joining("\n"));
 
             // Parse JSON with Gson

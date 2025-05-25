@@ -11,11 +11,10 @@ public class Main {
         //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
         // to see how IntelliJ IDEA suggests fixing it.
         System.out.printf("Hello and welcome!");
-
         String filePath = "single_zero_path_5x6.json";
         int[][] gridValues  = JsonReader.readGridFromJSON(filePath);
         Grid grid = new Grid(gridValues);
-        System.out.print(grid);
+        System.out.print(grid.toString());
 
     }
 }
