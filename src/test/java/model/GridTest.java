@@ -1,0 +1,60 @@
+package model;
+
+import org.junit.jupiter.api.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+
+class Gridtest {
+
+    @Test
+    void createValidGraphTest(){
+        // Given
+        int[][] validGrid = {{1,1,1},{-1,-1,-1}};
+        // When
+        Grid grid = new Grid(validGrid);
+        // then
+        assertEquals(grid.getGrid(), validGrid);
+    }
+
+    @Test
+    void failOnCreateNullGridTest(){
+        // Given
+        int[][] validGrid = null;
+        // When
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            new Grid(validGrid);
+        });
+        // then
+        assertEquals( "Grid cannot be null", exception.getMessage());
+    }
+
+    @Test
+    void failOnCreateOddPathLenghtGridTest(){
+        // Given
+        int[][] validGrid = {{1,1},{-1,-1}};
+        // When
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            new Grid(validGrid);
+        });
+        // then
+        assertEquals( "Path length 3 is odd; must be even", exception.getMessage());
+    }
+
+    @Test
+    void failOnCreateAGridWithInvalidNumbersTest(){
+        // Given
+        int[][] validGrid = {{2,1,1},{-1,-1,-1}};
+        // When
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            new Grid(validGrid);
+        });
+        // then
+        assertEquals( "Invalid value at [0][0]: 2; only +1 or -1 allowed", exception.getMessage());
+    }
+
+
+
+
+}
