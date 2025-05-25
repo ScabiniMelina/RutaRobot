@@ -1,5 +1,6 @@
 package model;
 
+import observer.Observer;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -52,6 +53,36 @@ class Gridtest {
         });
         // then
         assertEquals( "Invalid value at [0][0]: 2; only +1 or -1 allowed", exception.getMessage());
+    }
+
+
+    @Test
+    void addingObserverSuccesfullyTest(){
+        // Given
+        int[][] validGrid = {{1,1,1},{-1,-1,-1}};
+        Grid grid = new Grid(validGrid);
+        Observer observer = new Observer();
+
+        // When
+        grid.addObserver(observer);
+
+        // Then
+        assertEquals(1, grid.getObservers().size());
+    }
+
+    @Test
+    void failOnAddingNullObserverTest(){
+        // Given
+        int[][] validGrid = {{1,1,1},{-1,-1,-1}};
+        Grid grid = new Grid(validGrid);
+
+        // When
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            grid.addObserver(null);
+        });
+
+        // Then
+        assertEquals("The observer cannot be null", exception.getMessage());
     }
 
 

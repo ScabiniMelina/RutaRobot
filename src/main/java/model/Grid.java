@@ -21,6 +21,10 @@ public class Grid {
         this.observers.add(observer);
     }
 
+    public List<Observer> getObservers() {
+        return observers;
+    }
+
     public int[][] getGrid(){
         return this.grid;
     }
