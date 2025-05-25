@@ -1,5 +1,6 @@
 package model;
 
+import observer.IObserver;
 import observer.Observer;
 import org.junit.jupiter.api.Test;
 
@@ -61,7 +62,7 @@ class Gridtest {
         // Given
         int[][] validGrid = {{1,1,1},{-1,-1,-1}};
         Grid grid = new Grid(validGrid);
-        Observer observer = new Observer();
+        IObserver observer = new DummyObserver();
 
         // When
         grid.addObserver(observer);
@@ -85,7 +86,9 @@ class Gridtest {
         assertEquals("The observer cannot be null", exception.getMessage());
     }
 
-
-
-
+    class DummyObserver implements IObserver {
+        @Override
+        public void notify(Grid grid) {
+        }
+    }
 }
