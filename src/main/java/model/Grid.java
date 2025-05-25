@@ -9,7 +9,7 @@ public class Grid {
     private Cell[][] grid;
     private List<Observer> observers;
 
-    public Grid(Cell[][] grid, int rows, int columns, List<Observer> observers) {
+    public Grid(int[][] grid) {
         this.grid = grid;
         this.grid = new Cell[rows][columns];
 

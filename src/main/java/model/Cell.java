@@ -23,12 +23,17 @@ public class Cell {
         return charge != 1 || charge != -1;
     }
 
+
     public int getRow() {
         return this.row;
     }
 
     public int getColumn() {
         return this.column;
+    }
+
+    public int getCharge() {
+        return this.charge;
     }
 
 
