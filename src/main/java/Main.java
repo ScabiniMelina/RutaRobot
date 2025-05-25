@@ -15,6 +15,5 @@ public class Main {
         int[][] gridValues  = JsonReader.readGridFromJSON(filePath);
         Grid grid = new Grid(gridValues);
         System.out.print(grid.toString());
-
     }
 }

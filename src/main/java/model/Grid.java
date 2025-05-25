@@ -74,4 +74,7 @@ public class Grid {
         return sb.toString();
     }
 
+    public List<Position> getBestRoute() throws Exception {
+        throw new Exception("TO BE IMPLEMENTED");
+    }
 }
