@@ -1,24 +1,28 @@
 package model;
 
-import observer.Observer;
+import observer.IObserver;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Grid {
     private int[][] grid;
-    private List<Observer> observers;
+    private List<IObserver> observers;
 
     public Grid(int[][] grid) {
         isValidGrid(grid);
         this.grid = grid;
-        this.observers = new ArrayList<Observer>();
+        this.observers = new ArrayList<IObserver>();
     }
 
-    public void addObserver(Observer observer){
+    public void addObserver(IObserver observer){
         if (observer == null)
             throw new RuntimeException("The observer cannot be null");
         this.observers.add(observer);
+    }
+
+    public List<IObserver> getObservers() {
+        return observers;
     }
 
     public int[][] getGrid(){
