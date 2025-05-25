@@ -1,14 +1,13 @@
 package model;
 
 import observer.IObserver;
-import observer.Observer;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
-class Gridtest {
+class GridTest {
 
     @Test
     void createValidGraphTest(){
