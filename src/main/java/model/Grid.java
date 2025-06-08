@@ -29,6 +29,15 @@ public class Grid {
         return this.grid;
     }
 
+    public int getRows() {
+        return grid.length;
+    }
+
+    public int getColumns() {
+        return grid[0].length;
+    }
+
+
     private void isValidGrid(int[][] grid) {
         hasValidSize(grid);
         hasValidNumber(grid);
