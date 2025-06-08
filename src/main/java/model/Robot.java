@@ -47,7 +47,6 @@ public class Robot {
         List<Position> currentPath = new ArrayList<>();
         findPathWithoutPruning(0, 0, 0, currentPath);
         this.nonPruningMetric.stopTimer();
-        validateBestRoute(bestRoute);
         notifyObservers();
         return bestRoute;
     }
@@ -59,7 +58,6 @@ public class Robot {
         List<Position> currentPath = new ArrayList<>();
         findPathWithPruning(0, 0, 0, currentPath);
         this.pruningMetric.stopTimer();
-        validateBestRoute(bestRoute);
         notifyObservers();
         return bestRoute;
     }
@@ -131,7 +129,7 @@ public class Robot {
         return found;
     }
 
-    private boolean isAtDestination(int x, int y) {
+    public boolean isAtDestination(int x, int y) {
         return x == lastRow && y == lastColumn;
     }
 
@@ -143,20 +141,13 @@ public class Robot {
         return sum + stepsLeft >= 0 && sum - stepsLeft <= 0;
     }
 
-    private boolean canMoveRight(int y) {
+    public boolean canMoveRight(int y) {
         return y + 1 <= lastColumn;
     }
 
-    private boolean canMoveDown(int x) {
+    public boolean canMoveDown(int x) {
         return x + 1 <= lastRow;
     }
-
-    private void validateBestRoute(List<Position> bestRoute) throws Exception {
-        if (bestRoute == null) {
-            throw new Exception("No valid path found with sum zero");
-        }
-    }
-
 
     public Metric getNonPruningMetrics() {
         return nonPruningMetric;
@@ -180,4 +171,7 @@ public class Robot {
         return String.format("%s: %s", label, pathStr);
     }
 
+    public Grid getGrid() {
+        return grid;
+    }
 }

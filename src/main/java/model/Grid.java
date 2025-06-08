@@ -49,7 +49,7 @@ public class Grid {
         }
         int rows = grid.length;
         int cols = grid[0].length;
-        int pathLength = rows + cols - 1;
+        int pathLength = rows + cols -1;
         if (pathLength % 2 != 0) {
             throw new IllegalArgumentException(
                     "Path length " + pathLength + " is odd; must be even"
@@ -70,6 +70,7 @@ public class Grid {
             }
         }
     }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
