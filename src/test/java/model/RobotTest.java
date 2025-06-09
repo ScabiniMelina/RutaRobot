@@ -58,35 +58,39 @@ class RobotTest {
     @Test
     void getBestRouteWithoutPruningOnValidGridReturnsValidPath() throws Exception {
         robot = new Robot(validSingleSolutionGrid);
-        List<Position> path = robot.getBestRouteWithoutPruning();
-        assertEquals(10, path.size());
-        assertTrue(isValidPath(path,  robot.getGrid()), "Path should be valid (right/down moves)");
-        assertEquals(0, calculatePathSum(path,robot.getGrid()), "Path sum should be 0");
-        assertEquals(new Position(4, 5), path.get(path.size() - 1), "Path should end at (4,5)");
+        List<List<Position>> paths = robot.getBestRouteWithoutPruning();
+        for (List<Position> path : paths) {
+            assertEquals(10, path.size(), "Each path should have 10 steps for 5x6 grid");
+            assertTrue(isValidPath(path, robot.getGrid()), "Each path should be valid (right/down moves)");
+            assertEquals(0, calculatePathSum(path, robot.getGrid()), "Each path sum should be 0");
+            assertEquals(new Position(4, 5), path.get(path.size() - 1), "Each path should end at (4,5)");
+        }
     }
 
     @Test
     void getBestRouteWithPruningOnValidGridReturnsValidPath() throws Exception {
         robot = new Robot(validSingleSolutionGrid);
-        List<Position> path = robot.getBestRouteWithPruning();
-        assertEquals(10, path.size());
-        assertTrue(isValidPath(path,  robot.getGrid()), "Path should be valid (right/down moves)");
-        assertEquals(0, calculatePathSum(path,robot.getGrid()), "Path sum should be 0");
-        assertEquals(new Position(4, 5), path.get(path.size() - 1), "Path should end at (4,5)");
+        List<List<Position>> paths = robot.getBestRouteWithPruning();
+        for (List<Position> path : paths) {
+            assertEquals(10, path.size(), "Each path should have 10 steps for 5x6 grid");
+            assertTrue(isValidPath(path, robot.getGrid()), "Each path should be valid (right/down moves)");
+            assertEquals(0, calculatePathSum(path, robot.getGrid()), "Each path sum should be 0");
+            assertEquals(new Position(4, 5), path.get(path.size() - 1), "Each path should end at (4,5)");
+        }
     }
 
     @Test
     void getBestRouteWithoutPruningNoSolutionsGridThrowsException() throws Exception {
         Robot robot = new Robot(validNoPosibleSolutionsGrid);
-        assertNull(robot.getBestRouteWithoutPruning(),
-                "Should throw null for grid with no solutions");
+        List<List<Position>> paths = robot.getBestRouteWithoutPruning();
+        assertTrue(paths.isEmpty(), "Should throw [] for grid with no solutions");
     }
 
     @Test
     void getBestRouteWithPruningNoSolutionsGridThrowsException() throws Exception {
         Robot robot = new Robot(validNoPosibleSolutionsGrid);
-        assertNull(robot.getBestRouteWithPruning(),
-                "Should throw null for grid with no solutions");
+        List<List<Position>> paths = robot.getBestRouteWithPruning();
+        assertTrue(paths.isEmpty(), "Should throw [] for grid with no solutions");
     }
 
     @Test

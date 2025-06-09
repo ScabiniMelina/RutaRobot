@@ -4,6 +4,7 @@ import observer.IObserver;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Grid {
     private int[][] grid;
@@ -12,6 +13,34 @@ public class Grid {
     public Grid(int[][] grid) {
         isValidGrid(grid);
         this.grid = grid;
+        this.observers = new ArrayList<IObserver>();
+    }
+
+    public Grid() {
+        Random random = new Random();
+
+        //Generar un pathLength par entre 2 y 18
+        int pathLength = 2 + random.nextInt(5) * 2; // 2, 4, 6, ..., 18
+        int totalGrid = pathLength + 1;
+        int rows = totalGrid / 2;
+        int cols = totalGrid - rows;
+
+
+        System.out.println("pathLength: " + pathLength);
+        System.out.println("rows: " + rows + ", cols: " + cols);
+
+        int[][] gridData = new int[rows][cols];
+
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                gridData[i][j] = random.nextBoolean() ? 1 : -1;
+            }
+        }
+
+        this.grid = gridData;
+        hasValidSize(grid);
+        hasValidNumber(grid);
         this.observers = new ArrayList<IObserver>();
     }
 
