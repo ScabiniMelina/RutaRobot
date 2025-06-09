@@ -91,9 +91,15 @@ public class Robot {
             return;
         }
 
+
         int stepsLeft = (lastRow - x) + (lastColumn - y);
-        if (Math.abs(sum) > stepsLeft) {
-            return;
+
+        // Poda por paridad: si los pasos restantes más la suma actual no permiten balancear a cero (paridad)
+        // Es decir, si la suma y los pasos restantes tienen distinta paridad, no puede llegar a cero
+        //if ((stepsLeft + sum) % 2 != 0) { return; }
+
+        if (isBalanceImpossible(sum, stepsLeft)) {
+           return;
         }
 
         if (canMoveRight(y)) {
@@ -120,6 +126,11 @@ public class Robot {
     public boolean canMoveDown(int x) {
         return x < lastRow;
     }
+
+    private boolean isBalanceImpossible(int sum, int stepsLeft) {
+        return Math.abs(sum) > stepsLeft;
+    }
+
 
     public Metric getNonPruningMetrics() {
         return nonPruningMetric;

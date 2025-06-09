@@ -11,7 +11,7 @@ public class Grid {
     private List<IObserver> observers;
 
     public Grid(int[][] grid) {
-        isValidGrid(grid);
+        validateGrid(grid);
         this.grid = grid;
         this.observers = new ArrayList<IObserver>();
     }
@@ -19,18 +19,15 @@ public class Grid {
     public Grid() {
         Random random = new Random();
 
-        //Generar un pathLength par entre 2 y 18
-        int pathLength = 2 + random.nextInt(5) * 2; // 2, 4, 6, ..., 18
+        int pathLength = generateRandomEvenPathLength(random); // Generar pathLength par
         int totalGrid = pathLength + 1;
         int rows = totalGrid / 2;
         int cols = totalGrid - rows;
-
 
         System.out.println("pathLength: " + pathLength);
         System.out.println("rows: " + rows + ", cols: " + cols);
 
         int[][] gridData = new int[rows][cols];
-
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
@@ -39,13 +36,12 @@ public class Grid {
         }
 
         this.grid = gridData;
-        hasValidSize(grid);
-        hasValidNumber(grid);
+        validateGrid(grid);
         this.observers = new ArrayList<IObserver>();
     }
 
-    public void addObserver(IObserver observer){
-        if (observer == null)
+    public void addObserver(IObserver observer) {
+        if (isObserverNull(observer))
             throw new RuntimeException("The observer cannot be null");
         this.observers.add(observer);
     }
@@ -54,7 +50,7 @@ public class Grid {
         return observers;
     }
 
-    public int[][] getGrid(){
+    public int[][] getGrid() {
         return this.grid;
     }
 
@@ -66,31 +62,30 @@ public class Grid {
         return grid[0].length;
     }
 
-
-    private void isValidGrid(int[][] grid) {
-        hasValidSize(grid);
-        hasValidNumber(grid);
+    private void validateGrid(int[][] grid) {
+        validateGridSize(grid);
+        validateGridValues(grid);
     }
 
-    private void hasValidSize(int[][] grid) {
-        if (grid == null) {
+    private void validateGridSize(int[][] grid) {
+        if (isGridNull(grid)) {
             throw new IllegalArgumentException("Grid cannot be null");
         }
         int rows = grid.length;
         int cols = grid[0].length;
-        int pathLength = rows + cols -1;
-        if (pathLength % 2 != 0) {
+        int pathLength = rows + cols - 1;
+        if (isPathLengthOdd(pathLength)) {
             throw new IllegalArgumentException(
                     "Path length " + pathLength + " is odd; must be even"
             );
         }
     }
 
-    private void hasValidNumber(int[][] grid) {
+    private void validateGridValues(int[][] grid) {
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
                 int value = grid[i][j];
-                if (value != 1 && value != -1) {
+                if (isInvalidGridValue(value)) {
                     throw new IllegalArgumentException(
                             "Invalid value at [" + i + "][" + j + "]: " + value +
                                     "; only +1 or -1 allowed"
@@ -98,6 +93,26 @@ public class Grid {
                 }
             }
         }
+    }
+
+    private boolean isGridNull(int[][] grid) {
+        return grid == null;
+    }
+
+    private boolean isPathLengthOdd(int pathLength) {
+        return pathLength % 2 != 0;
+    }
+
+    private boolean isInvalidGridValue(int value) {
+        return value != 1 && value != -1;
+    }
+
+    private boolean isObserverNull(IObserver observer) {
+        return observer == null;
+    }
+
+    private int generateRandomEvenPathLength(Random random) {
+        return 2 + random.nextInt(5) * 2; // 2, 4, 6, ..., 18
     }
 
     @Override
