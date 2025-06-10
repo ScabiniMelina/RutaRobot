@@ -8,146 +8,136 @@ import java.util.stream.Collectors;
 
 public class Robot {
     private Grid grid;
-    private List<Position> bestRoute;
-    private int pathsExploredNoPruning;
-    private int pathsExploredPruning;
-    private long executionTimeNoPruning;
-    private long executionTimePruning;
+    private List<List<Position>> allValidPaths;
     private List<IObserver> observers;
     private final int lastRow;
     private final int lastColumn;
+    private Metric nonPruningMetric;
+    private Metric pruningMetric;
 
     public Robot(Grid grid) {
+        if (grid == null) {
+            throw new IllegalArgumentException("Grid cannot be null");
+        }
         this.grid = grid;
-        this.bestRoute = null;
-        this.pathsExploredNoPruning = 0;
-        this.pathsExploredPruning = 0;
-        this.executionTimeNoPruning = 0;
-        this.executionTimePruning = 0;
         this.lastRow = grid.getRows() - 1;
-        this.lastColumn =  grid.getColumns() -1;
-
+        this.lastColumn = grid.getColumns() - 1;
+        this.allValidPaths = new ArrayList<>();
         this.observers = new ArrayList<>();
+        this.nonPruningMetric = new Metric();
+        this.pruningMetric = new Metric();
     }
 
     public void addObserver(IObserver observer) {
         this.observers.add(observer);
     }
 
-    public List<Position> getBestRouteWithoutPruning() throws Exception {
-        long startTime = System.nanoTime();
-        pathsExploredNoPruning = 0;
-        bestRoute = null;
+    public List<List<Position>> getBestRouteWithoutPruning() throws Exception {
+        nonPruningMetric.reset();
+        nonPruningMetric.startTimer();
+        allValidPaths.clear();
         List<Position> currentPath = new ArrayList<>();
-        findPathWithoutPruning(0, 0, 0, currentPath);
-        executionTimeNoPruning = System.nanoTime() - startTime;
-        if (bestRoute == null) {
-            throw new Exception("No valid path found with sum zero (without pruning)");
-        }
+        currentPath.add(new Position(0, 0));
+        findPathWithoutPruning(0, 0, grid.getGrid()[0][0], currentPath);
+        nonPruningMetric.stopTimer();
         notifyObservers();
-        return bestRoute;
+        return new ArrayList<>(allValidPaths);
     }
 
-    public List<Position> getBestRouteWithPruning() throws Exception {
-        long startTime = System.nanoTime();
-        pathsExploredPruning = 0;
-        bestRoute = null;
+    public List<List<Position>> getBestRouteWithPruning() throws Exception {
+        pruningMetric.reset();
+        pruningMetric.startTimer();
+        allValidPaths.clear();
         List<Position> currentPath = new ArrayList<>();
-        findPathWithPruning(0, 0, 0, currentPath);
-        executionTimePruning = System.nanoTime() - startTime;
-        if (bestRoute == null) {
-            throw new Exception("No valid path found with sum zero (with pruning)");
-        }
+        currentPath.add(new Position(0, 0));
+        findPathWithPruning(0, 0, grid.getGrid()[0][0], currentPath);
+        pruningMetric.stopTimer();
         notifyObservers();
-        return bestRoute;
+        return new ArrayList<>(allValidPaths);
     }
 
-    private boolean findPathWithoutPruning(int x, int y, int sum, List<Position> currentPath) {
-        currentPath.add(new Position(x, y));
-        sum += grid.getGrid()[x][y];
-        pathsExploredNoPruning++;
+    private void findPathWithoutPruning(int x, int y, int sum, List<Position> currentPath) {
+        nonPruningMetric.incrementRecursiveCalls();
 
-        // Condición de éxito
-        if (x == lastRow  && y == lastColumn ) {
+        if (isAtDestination(x, y)) {
+            nonPruningMetric.incrementExploredPaths();
             if (sum == 0) {
-                bestRoute = new ArrayList<>(currentPath);
-                return true;
+                allValidPaths.add(new ArrayList<>(currentPath));
             }
+            return;
+        }
+
+        if (canMoveRight(y)) {
+            currentPath.add(new Position(x, y + 1));
+            findPathWithoutPruning(x, y + 1, sum + grid.getGrid()[x][y + 1], currentPath);
             currentPath.remove(currentPath.size() - 1);
-            return false;
         }
 
-        boolean found = false;
-
-        // Movimiento a la derecha
-        if (y + 1 <= lastColumn ) {
-            found |= findPathWithoutPruning(x, y + 1, sum, currentPath);
+        if (canMoveDown(x)) {
+            currentPath.add(new Position(x + 1, y));
+            findPathWithoutPruning(x + 1, y, sum + grid.getGrid()[x + 1][y], currentPath);
+            currentPath.remove(currentPath.size() - 1);
         }
-
-        // Movimiento hacia abajo
-        if (!found && x + 1 <= lastRow ) {
-            found |= findPathWithoutPruning(x + 1, y, sum, currentPath);
-        }
-
-        currentPath.remove(currentPath.size() - 1);
-        return found;
     }
 
-    private boolean findPathWithPruning(int x, int y, int sum, List<Position> currentPath) {
-        currentPath.add(new Position(x, y));
-        sum += grid.getGrid()[x][y];
-        pathsExploredPruning++;
+    private void findPathWithPruning(int x, int y, int sum, List<Position> currentPath) {
+        pruningMetric.incrementRecursiveCalls();
 
-        // Condición de éxito
-        if (x == lastRow && y == lastColumn) {
+        if (isAtDestination(x, y)) {
+            pruningMetric.incrementExploredPaths();
             if (sum == 0) {
-                bestRoute = new ArrayList<>(currentPath);
-                return true;
+                allValidPaths.add(new ArrayList<>(currentPath));
             }
-            currentPath.remove(currentPath.size() - 1);
-            return false;
+            return;
         }
 
-        // Poda: verificar si la suma puede llegar a 0
+
         int stepsLeft = (lastRow - x) + (lastColumn - y);
-        //cuántos pasos faltan para llegar al destino (suma de movimientos abajo y a la derecha).
-        // sum + stepsLeft < 0: Si incluso con todos +1, la suma es negativa, no sirve.
-        //sum - stepsLeft > 0: Si incluso con todos -1, la suma es positiva, no sirve.
-        if (sum + stepsLeft < 0 || sum - stepsLeft > 0) {
+
+        // Poda por paridad: si los pasos restantes más la suma actual no permiten balancear a cero (paridad)
+        // Es decir, si la suma y los pasos restantes tienen distinta paridad, no puede llegar a cero
+        //if ((stepsLeft + sum) % 2 != 0) { return; }
+
+        if (isBalanceImpossible(sum, stepsLeft)) {
+           return;
+        }
+
+        if (canMoveRight(y)) {
+            currentPath.add(new Position(x, y + 1));
+            findPathWithPruning(x, y + 1, sum + grid.getGrid()[x][y + 1], currentPath);
             currentPath.remove(currentPath.size() - 1);
-            return false;
         }
 
-        boolean found = false;
-
-        // Movimiento a la derecha
-        if (y + 1 <= lastColumn ) {
-            found |= findPathWithoutPruning(x, y + 1, sum, currentPath);
+        if (canMoveDown(x)) {
+            currentPath.add(new Position(x + 1, y));
+            findPathWithPruning(x + 1, y, sum + grid.getGrid()[x + 1][y], currentPath);
+            currentPath.remove(currentPath.size() - 1);
         }
-
-        // Movimiento hacia abajo
-        if (!found && x + 1 <= lastRow ) {
-            found |= findPathWithoutPruning(x + 1, y, sum, currentPath);
-        }
-
-        currentPath.remove(currentPath.size() - 1);
-        return found;
     }
 
-    public int getPathsExploredNoPruning() {
-        return pathsExploredNoPruning;
+    public boolean isAtDestination(int x, int y) {
+        return x == lastRow && y == lastColumn;
     }
 
-    public int getPathsExploredPruning() {
-        return pathsExploredPruning;
+    public boolean canMoveRight(int y) {
+        return y < lastColumn;
     }
 
-    public double getExecutionTimeNoPruningMs() {
-        return executionTimeNoPruning / 1_000_000.0;
+    public boolean canMoveDown(int x) {
+        return x < lastRow;
     }
 
-    public double getExecutionTimePruningMs() {
-        return executionTimePruning / 1_000_000.0;
+    private boolean isBalanceImpossible(int sum, int stepsLeft) {
+        return Math.abs(sum) > stepsLeft;
+    }
+
+
+    public Metric getNonPruningMetrics() {
+        return nonPruningMetric;
+    }
+
+    public Metric getPruningMetrics() {
+        return pruningMetric;
     }
 
     private void notifyObservers() {
@@ -156,12 +146,22 @@ public class Robot {
         }
     }
 
-
-    public String formatPath(List<Position> path, String label) {
-        String pathStr = path.stream()
-                .map(p -> String.format("(%d,%d)", p.getX(), p.getY()))
-                .collect(Collectors.joining(" -> "));
-        return String.format("%s: %s", label, pathStr);
+    public String formatPaths(List<List<Position>> paths, String label) {
+        if (paths == null || paths.isEmpty()) {
+            return label + ": No valid paths found";
+        }
+        StringBuilder result = new StringBuilder(label + ":\n");
+        for (int i = 0; i < paths.size(); i++) {
+            List<Position> path = paths.get(i);
+            String pathStr = path.stream()
+                    .map(p -> String.format("(%d,%d)", p.getX(), p.getY()))
+                    .collect(Collectors.joining(" -> "));
+            result.append(String.format("Path %d: %s\n", i + 1, pathStr));
+        }
+        return result.toString();
     }
 
+    public Grid getGrid() {
+        return grid;
+    }
 }

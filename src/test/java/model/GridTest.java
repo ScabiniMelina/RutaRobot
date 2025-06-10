@@ -38,14 +38,14 @@ class GridTest {
     @Test
     void failOnCreateOddPathLenghtGridTest(){
         // Given
-        int[][] validGrid = {{1,1},{-1,-1}};
+        int[][] validGrid = {{1}};
         // When
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             Grid grid = new Grid();
             grid.initGrid(validGrid);
         });
         // then
-        assertEquals( "Path length 3 is odd; must be even", exception.getMessage());
+        assertEquals( "Path length 1 is odd; must be even", exception.getMessage());
     }
 
     @Test

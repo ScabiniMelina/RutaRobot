@@ -46,7 +46,8 @@ public class JsonReader {
 
             return grid;
 
-        } catch (JsonParseException e) {
+        }
+        catch (JsonParseException | IllegalStateException e) {
             throw new JsonParseException("Error parsing JSON file: " + e.getMessage(), e);
         }
     }
