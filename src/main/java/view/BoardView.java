@@ -12,13 +12,13 @@ import static view.util.ColorPalette.*;
 import static view.util.FontPalette.*;
 import static view.util.Texts.NO_BOARD_SELECTED;
 
-public class GameView extends BaseView implements IObserver {
+public class BoardView extends BaseView implements IObserver {
     private final RobotController robotController;
     private JTable gridTable;
     private DefaultTableModel tableModel;
     private JLabel selectedBoardLabel;
 
-    public GameView(RobotController robotController) {
+    public BoardView(RobotController robotController) {
         super();
         this.robotController = robotController;
         setupGameView();
@@ -34,9 +34,19 @@ public class GameView extends BaseView implements IObserver {
         gamePanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 30, 30));
 
         gamePanel.add(createHeaderPanel(), BorderLayout.NORTH);
-        gamePanel.add(createTablePanel(), BorderLayout.CENTER);
+        gamePanel.add(createContentPanel(), BorderLayout.CENTER);
 
         return gamePanel;
+    }
+
+    private JPanel createContentPanel() {
+        JPanel contentPanel = new JPanel(new BorderLayout());
+        contentPanel.setBackground(BACKGROUND_DARK_BLUE.getColor());
+
+        contentPanel.add(createTablePanel(), BorderLayout.CENTER);
+        contentPanel.add(createButtonPanel(), BorderLayout.SOUTH);
+
+        return contentPanel;
     }
 
     private JPanel createHeaderPanel() {
@@ -122,6 +132,64 @@ public class GameView extends BaseView implements IObserver {
         };
         
         gridTable.setDefaultRenderer(Object.class, centerRenderer);
+    }
+
+    private JPanel createButtonPanel() {
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
+        buttonPanel.setBackground(BACKGROUND_DARK_BLUE.getColor());
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
+
+        buttonPanel.add(createRouteButton("Recorrer con Podas"));
+        buttonPanel.add(createRouteButton("Recorrer con Fuerza Bruta"));
+
+        return buttonPanel;
+    }
+
+    private JButton createRouteButton(String text) {
+        JButton button = new JButton(text);
+        setupButtonProperties(button);
+        addButtonHoverEffect(button);
+        
+        return button;
+    }
+
+    private void setupButtonProperties(JButton button) {
+        button.setFont(BUTTON.getFont());
+        button.setPreferredSize(new Dimension(250, 40));
+        button.setBackground(BUTTON_BLUE.getColor());
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+        button.setOpaque(true);
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        button.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(CARD_COLOR.getColor(), 1),
+            BorderFactory.createEmptyBorder(8, 20, 8, 20)
+        ));
+    }
+
+    private void addButtonHoverEffect(JButton button) {
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setBackground(BUTTON_STATIONS_PURPLE.getColor());
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setBackground(BUTTON_BLUE.getColor());
+            }
+
+            @Override
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                button.setBackground(BACKGROUND_DARK_BLUE.getColor());
+            }
+
+            @Override
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                button.setBackground(BUTTON_STATIONS_PURPLE.getColor());
+            }
+        });
     }
 
     public void setSelectedBoard(String selectedBoard) {

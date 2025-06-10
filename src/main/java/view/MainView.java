@@ -181,9 +181,9 @@ public class MainView extends BaseView {
     }
 
     private void openGameView(String selectedBoard) {
-        GameView gameView = new GameView(controller);
-        gameView.setSelectedBoard(selectedBoard);
-        gameView.setVisible(true);
+        BoardView boardView = new BoardView(controller);
+        boardView.setSelectedBoard(selectedBoard);
+        boardView.setVisible(true);
         this.dispose();
     }
 
