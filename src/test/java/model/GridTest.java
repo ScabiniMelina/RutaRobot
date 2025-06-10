@@ -1,10 +1,11 @@
 package model;
 
 import observer.IObserver;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 class GridTest {
@@ -14,7 +15,8 @@ class GridTest {
         // Given
         int[][] validGrid = {{1,1,1},{-1,-1,-1}};
         // When
-        Grid grid = new Grid(validGrid);
+        Grid grid = new Grid();
+        grid.initGrid(validGrid);
         // then
         assertEquals(grid.getGrid(), validGrid);
     }
@@ -25,7 +27,9 @@ class GridTest {
         int[][] validGrid = null;
         // When
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Grid(validGrid);
+            Grid grid = new Grid();
+            grid.initGrid(validGrid);
+
         });
         // then
         assertEquals( "Grid cannot be null", exception.getMessage());
@@ -37,7 +41,8 @@ class GridTest {
         int[][] validGrid = {{1,1},{-1,-1}};
         // When
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Grid(validGrid);
+            Grid grid = new Grid();
+            grid.initGrid(validGrid);
         });
         // then
         assertEquals( "Path length 3 is odd; must be even", exception.getMessage());
@@ -49,7 +54,8 @@ class GridTest {
         int[][] validGrid = {{2,1,1},{-1,-1,-1}};
         // When
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Grid(validGrid);
+            Grid grid = new Grid();
+            grid.initGrid(validGrid);
         });
         // then
         assertEquals( "Invalid value at [0][0]: 2; only +1 or -1 allowed", exception.getMessage());
@@ -60,7 +66,8 @@ class GridTest {
     void addingObserverSuccesfullyTest(){
         // Given
         int[][] validGrid = {{1,1,1},{-1,-1,-1}};
-        Grid grid = new Grid(validGrid);
+        Grid grid = new Grid();
+        grid.initGrid(validGrid);
         IObserver observer = new DummyObserver();
 
         // When
@@ -74,7 +81,8 @@ class GridTest {
     void failOnAddingNullObserverTest(){
         // Given
         int[][] validGrid = {{1,1,1},{-1,-1,-1}};
-        Grid grid = new Grid(validGrid);
+        Grid grid = new Grid();
+        grid.initGrid(validGrid);
 
         // When
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {

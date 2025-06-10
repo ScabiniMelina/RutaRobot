@@ -5,8 +5,13 @@ import model.Grid;
 import observer.IObserver;
 import view.util.ColorPalette;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.BorderFactory;
+import javax.swing.SwingConstants;
+import java.awt.Dimension;
+import java.awt.BorderLayout;
+import java.awt.Font;
 
 public class GameView extends JFrame implements IObserver {
     private final RobotController robotController;

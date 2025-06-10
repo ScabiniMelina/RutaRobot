@@ -9,10 +9,13 @@ public class Grid {
     private int[][] grid;
     private List<IObserver> observers;
 
-    public Grid(int[][] grid) {
+    public Grid() {
+        this.observers = new ArrayList<IObserver>();
+    }
+
+    public void initGrid(int[][] grid) {
         isValidGrid(grid);
         this.grid = grid;
-        this.observers = new ArrayList<IObserver>();
     }
 
     public void addObserver(IObserver observer){

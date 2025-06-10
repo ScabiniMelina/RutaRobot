@@ -9,9 +9,7 @@ import java.io.*;
 import java.util.stream.Collectors;
 
 public class JsonReader {
-
-    public void main() {
-    }
+    public JsonReader() {}
 
     public static int[][] readGridFromJSON(String resourcePath) throws IOException, JsonParseException {
 
