@@ -10,7 +10,7 @@ import java.awt.*;
 
 import static view.util.ColorPalette.*;
 import static view.util.FontPalette.*;
-import static view.util.Texts.NO_BOARD_SELECTED;
+import static view.util.Texts.*;
 
 public class BoardView extends BaseView implements IObserver {
     private final RobotController robotController;
@@ -54,7 +54,7 @@ public class BoardView extends BaseView implements IObserver {
         headerPanel.setBackground(BACKGROUND_DARK_BLUE.getColor());
         headerPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
 
-        selectedBoardLabel = new JLabel(NO_BOARD_SELECTED);
+        selectedBoardLabel = new JLabel(BOARD_SELECTED + NO_BOARD_SELECTED);
         selectedBoardLabel.setFont(LABEL.getFont());
         selectedBoardLabel.setForeground(TEXT_WHITE_SOFT.getColor());
 
@@ -139,8 +139,8 @@ public class BoardView extends BaseView implements IObserver {
         buttonPanel.setBackground(BACKGROUND_DARK_BLUE.getColor());
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
 
-        buttonPanel.add(createRouteButton("Recorrer con Podas"));
-        buttonPanel.add(createRouteButton("Recorrer con Fuerza Bruta"));
+        buttonPanel.add(createRouteButton(PRUNING_PATH));
+        buttonPanel.add(createRouteButton(NO_PRUNING_PATH));
 
         return buttonPanel;
     }
@@ -193,14 +193,16 @@ public class BoardView extends BaseView implements IObserver {
     }
 
     public void setSelectedBoard(String selectedBoard) {
-        selectedBoardLabel.setText("Tablero seleccionado: " + selectedBoard);
+        selectedBoardLabel.setText(BOARD_SELECTED + selectedBoard);
         robotController.addGridObserver(this);
         robotController.setRobotGrid(selectedBoard);
     }
 
     @Override
     public void update(String eventType) {
-        updateGridTable();
+        if (eventType == GRID_UPDATED)
+            updateGridTable();
+
     }
 
     private void updateGridTable() {

@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static view.util.Texts.GRID_UPDATED;
+
 public class Grid {
     private int[][] gridMatrix;
     private List<IObserver> observers;
@@ -17,7 +19,7 @@ public class Grid {
     public void initGrid(int[][] grid) {
         validateGrid(grid);
         this.gridMatrix = grid;
-        notifyObservers("GRID_UPDATED");
+        notifyObservers(GRID_UPDATED);
     }
 
     public Grid() {
