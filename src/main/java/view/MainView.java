@@ -1,8 +1,6 @@
 package view;
 
 import controller.RobotController;
-import view.util.Texts;
-
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
@@ -13,9 +11,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import static view.util.ColorPalette.*;
 import static view.util.FontPalette.*;
+import static view.util.Texts.BOARD_SELECTION;
+import static view.util.Texts.INIT;
 
 public class MainView extends BaseView {
     RobotController controller;
@@ -59,7 +58,7 @@ public class MainView extends BaseView {
     }
 
     private JLabel createSelectorLabel() {
-        JLabel label = new JLabel(Texts.boardSelection);
+        JLabel label = new JLabel(BOARD_SELECTION);
         label.setFont(LABEL.getFont());
         label.setForeground(TEXT_WHITE_SOFT.getColor());
         label.setBorder(createEmptyBorder(0, 8, 20, 0));
@@ -152,7 +151,7 @@ public class MainView extends BaseView {
     }
 
     private JButton createStartButton() {
-        JButton startButton = new JButton(Texts.init);
+        JButton startButton = new JButton(INIT);
         setupButtonProperties(startButton);
         addComplexHoverEffect(startButton);
         addButtonAction(startButton);

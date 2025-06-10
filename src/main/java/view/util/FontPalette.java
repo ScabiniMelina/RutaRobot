@@ -3,7 +3,7 @@ package view.util;
 import java.awt.Font;
 
 public enum FontPalette {
-    TITLE(new Font("Segoe UI", Font.BOLD, 28)),
+    TITLE_FONT(new Font("Segoe UI", Font.BOLD, 28)),
     LABEL(new Font("Segoe UI", Font.PLAIN, 14)),
     COMBO(new Font("Segoe UI", Font.PLAIN, 14)),
     BUTTON(new Font("Segoe UI", Font.BOLD, 14)),

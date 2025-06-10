@@ -41,6 +41,10 @@ public class RobotController {
         }
     }
 
+    public void addGridObserver(observer.IObserver observer) {
+        robot.getGrid().addObserver(observer);
+    }
+
     public List<Position> getBestRouteWithoutPruning(int index) throws Exception {
         return robot.getRoutesWithoutPruning().get(index);
     }

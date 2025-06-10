@@ -8,7 +8,8 @@ import java.awt.*;
 import static javax.swing.BorderFactory.createEmptyBorder;
 import static view.util.ColorPalette.BACKGROUND_DARK_BLUE;
 import static view.util.ColorPalette.TEXT_WHITE_SOFT;
-import static view.util.FontPalette.TITLE;
+import static view.util.FontPalette.TITLE_FONT;
+import static view.util.Texts.TITLE;
 
 public class BaseView extends JFrame {
 
@@ -18,7 +19,7 @@ public class BaseView extends JFrame {
     }
 
     private void initializeFrame() {
-        setTitle(Texts.title);
+        setTitle(TITLE);
         setSize(1000, 700);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -33,7 +34,7 @@ public class BaseView extends JFrame {
     private JPanel createTitlePanel() {
         JPanel titlePanel = createPanel(BACKGROUND_DARK_BLUE.getColor());
         titlePanel.setBorder(createEmptyBorder(60, 30, 0, 30));
-        titlePanel.add(createTitleLabel(Texts.title), BorderLayout.CENTER);
+        titlePanel.add(createTitleLabel(TITLE), BorderLayout.CENTER);
         return titlePanel;
     }
 
@@ -45,7 +46,7 @@ public class BaseView extends JFrame {
 
     private JLabel createTitleLabel(String title) {
         JLabel titleLabel = new JLabel(title, SwingConstants.CENTER);
-        titleLabel.setFont(TITLE.getFont());
+        titleLabel.setFont(TITLE_FONT.getFont());
         titleLabel.setForeground(TEXT_WHITE_SOFT.getColor());
         titleLabel.setOpaque(false);
         return titleLabel;

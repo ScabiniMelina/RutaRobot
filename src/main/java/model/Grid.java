@@ -17,6 +17,7 @@ public class Grid {
     public void initGrid(int[][] grid) {
         validateGrid(grid);
         this.gridMatrix = grid;
+        notifyObservers("GRID_UPDATED");
     }
 
     public Grid() {
@@ -131,4 +132,9 @@ public class Grid {
         return sb.toString();
     }
 
+    private void notifyObservers(String eventType) {
+        for (IObserver observer : observers) {
+            observer.update(eventType);
+        }
+    }
 }
