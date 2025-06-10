@@ -14,7 +14,7 @@ public class Main {
         RobotController controller = new RobotController(robot);
         MainView mainView = new MainView(controller);
         BoardView boardView = new BoardView(controller);
-        ReportView reportView = new ReportView(controller);
+        ReportView reportView = new ReportView(controller, boardView);
         mainView.setVisible(true);
 
     }

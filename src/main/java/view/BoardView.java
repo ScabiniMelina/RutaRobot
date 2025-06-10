@@ -1,12 +1,14 @@
 package view;
 
 import controller.RobotController;
+import model.Position;
 import observer.IObserver;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.List;
 
 import static view.util.ColorPalette.*;
 import static view.util.FontPalette.*;
@@ -149,6 +151,7 @@ public class BoardView extends BaseView implements IObserver {
         JButton button = new JButton(text);
         setupButtonProperties(button);
         addButtonHoverEffect(button);
+        addButtonAction(button, text);
         
         return button;
     }
@@ -190,6 +193,29 @@ public class BoardView extends BaseView implements IObserver {
                 button.setBackground(BUTTON_STATIONS_PURPLE.getColor());
             }
         });
+    }
+
+    private void addButtonAction(JButton button, String buttonText) {
+        button.addActionListener(e -> {
+            try {
+                if (buttonText.equals(PRUNING_PATH)) {
+                    List<Position> path = robotController.getBestRoutesWithPruning(0);
+                    openReportView(path, "Algoritmo con Podas");
+                } else if (buttonText.equals(NO_PRUNING_PATH)) {
+                    List<Position> path = robotController.getBestRouteWithoutPruning(0);
+                    openReportView(path, "Algoritmo de Fuerza Bruta");
+                }
+            } catch (Exception ex) {
+                System.err.println("Error al ejecutar el algoritmo: " + ex.getMessage());
+            }
+        });
+    }
+
+    private void openReportView(List<Position> path, String algorithmType) {
+        ReportView reportView = new ReportView(robotController, this);
+        reportView.setPathAndGrid(path, algorithmType);
+        reportView.setVisible(true);
+        this.setVisible(false);
     }
 
     public void setSelectedBoard(String selectedBoard) {
