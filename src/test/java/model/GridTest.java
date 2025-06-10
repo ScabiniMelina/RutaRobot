@@ -95,7 +95,8 @@ class GridTest {
 
     class DummyObserver implements IObserver {
         @Override
-        public void notify(Grid grid) {
+        public void update(String eventType) {
+
         }
     }
 }

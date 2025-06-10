@@ -1,7 +1,5 @@
 package observer;
 
-import model.Grid;
-
 public interface IObserver {
-    public void notify(Grid grid);
+    public void update(String eventType);
 }

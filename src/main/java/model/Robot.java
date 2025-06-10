@@ -32,7 +32,7 @@ public class Robot {
         this.observers.add(observer);
     }
 
-    public List<List<Position>> getBestRouteWithoutPruning() throws Exception {
+    public List<List<Position>> getRoutesWithoutPruning() throws Exception {
         nonPruningMetric.reset();
         nonPruningMetric.startTimer();
         allValidPaths.clear();
@@ -40,11 +40,10 @@ public class Robot {
         currentPath.add(new Position(0, 0));
         findPathWithoutPruning(0, 0, grid.getGrid()[0][0], currentPath);
         nonPruningMetric.stopTimer();
-        notifyObservers();
         return new ArrayList<>(allValidPaths);
     }
 
-    public List<List<Position>> getBestRouteWithPruning() throws Exception {
+    public List<List<Position>> getRoutesWithPruning() throws Exception {
         pruningMetric.reset();
         pruningMetric.startTimer();
         allValidPaths.clear();
@@ -52,7 +51,6 @@ public class Robot {
         currentPath.add(new Position(0, 0));
         findPathWithPruning(0, 0, grid.getGrid()[0][0], currentPath);
         pruningMetric.stopTimer();
-        notifyObservers();
         return new ArrayList<>(allValidPaths);
     }
 
@@ -138,12 +136,6 @@ public class Robot {
 
     public Metric getPruningMetrics() {
         return pruningMetric;
-    }
-
-    private void notifyObservers() {
-        for (IObserver observer : observers) {
-            observer.notify(this.grid);
-        }
     }
 
     public String formatPaths(List<List<Position>> paths, String label) {

@@ -11,102 +11,80 @@ import javax.swing.plaf.basic.BasicComboBoxUI;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import static view.util.ColorPalette.*;
 import static view.util.FontPalette.*;
 
-public class MainView extends JFrame {
+public class MainView extends BaseView {
     RobotController controller;
     JComboBox<String> selectedComboBox;
 
     public MainView(RobotController controller) {
         this.controller = controller;
-        initializeFrame();
-        setupLayout();
-    }
-    
-    private void initializeFrame() {
-        setTitle(Texts.title);
-        setSize(1000, 700);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        getContentPane().setBackground(BACKGROUND_DARK_BLUE.getColor());
-        setLayout(new BorderLayout());
-    }
-    
-    private void setupLayout() {
-        add(createTitlePanel(), BorderLayout.NORTH);
         add(createMainCard(), BorderLayout.CENTER);
     }
-    
-    private JPanel createTitlePanel() {
-        JPanel titlePanel = createPanel(BACKGROUND_DARK_BLUE.getColor());
-        titlePanel.setBorder(createEmptyBorder(60, 30, 0, 30));
-        titlePanel.add(createTitleLabel(Texts.welcome), BorderLayout.CENTER);
-        return titlePanel;
-    }
-    
+
     private JPanel createMainCard() {
         JPanel cardContainer = createGridBagPanel();
         cardContainer.setBorder(createEmptyBorder(15, 30, 50, 30));
-        
+
         JPanel mainCard = createMainCardPanel();
         cardContainer.add(mainCard, createCenterConstraints());
         return cardContainer;
     }
-    
+
     private JPanel createMainCardPanel() {
         JPanel mainCard = new JPanel();
         mainCard.setLayout(new BoxLayout(mainCard, BoxLayout.Y_AXIS));
         mainCard.setBackground(CARD_COLOR.getColor());
         mainCard.setBorder(createCardBorder());
-        
+
         mainCard.add(createGridSelector());
         mainCard.add(Box.createVerticalStrut(25));
-        mainCard.add(createProfessionalButton());
-        
+        mainCard.add(createButton());
+
         return mainCard;
     }
 
     private JPanel createGridSelector() {
         JPanel container = createPanel(CARD_COLOR.getColor());
         container.setMaximumSize(new Dimension(600, 100));
-        
+
         container.add(createSelectorLabel(), BorderLayout.NORTH);
         container.add(createComboBox(), BorderLayout.CENTER);
-        
+
         return container;
     }
-    
+
     private JLabel createSelectorLabel() {
         JLabel label = new JLabel(Texts.boardSelection);
         label.setFont(LABEL.getFont());
         label.setForeground(TEXT_WHITE_SOFT.getColor());
-        label.setBorder(createEmptyBorder(0, 8, 8, 0));
+        label.setBorder(createEmptyBorder(0, 8, 20, 0));
         return label;
     }
-    
+
     private JComboBox<String> createComboBox() {
         String[] boards = controller.getBoardNames();
         selectedComboBox = new JComboBox<>(boards);
-        
+
         setupComboBoxProperties(selectedComboBox);
         selectedComboBox.setRenderer(createComboBoxRenderer());
         selectedComboBox.setUI(createComboBoxUI());
-        
+
         return selectedComboBox;
     }
-    
+
     private void setupComboBoxProperties(JComboBox<String> combo) {
         combo.setFont(COMBO.getFont());
         combo.setPreferredSize(new Dimension(600, 55));
-        combo.setMinimumSize(new Dimension(600, 55));
-        combo.setMaximumSize(new Dimension(600, 55));
         combo.setBackground(TEXT_WHITE_SOFT.getColor());
         combo.setForeground(BACKGROUND_DARK_BLUE.getColor());
         combo.setBorder(createComboBorder());
     }
-    
+
     private DefaultListCellRenderer createComboBoxRenderer() {
         return new DefaultListCellRenderer() {
             @Override
@@ -115,14 +93,14 @@ public class MainView extends JFrame {
                 super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                 setBorder(createEmptyBorder(10, 16, 10, 16));
                 setFont(COMBO.getFont());
-                
+
                 setBackground(isSelected ? BUTTON_BLUE.getColor() : TEXT_WHITE_SOFT.getColor());
-                setForeground(isSelected ? TEXT_WHITE.getColor() : BACKGROUND_DARK_BLUE.getColor());
+                setForeground(isSelected ? TEXT_WHITE_SOFT.getColor() : BACKGROUND_DARK_BLUE.getColor());
                 return this;
             }
         };
     }
-    
+
     private BasicComboBoxUI createComboBoxUI() {
         return new BasicComboBoxUI() {
             @Override
@@ -131,18 +109,18 @@ public class MainView extends JFrame {
             }
         };
     }
-    
+
     private JButton createArrowButton() {
         JButton arrowButton = new JButton("▼");
         setupArrowProperties(arrowButton);
         addHoverEffect(arrowButton, CARD_COLOR.getColor(), BUTTON_BLUE.getColor());
         return arrowButton;
     }
-    
+
     private void setupArrowProperties(JButton arrowButton) {
         arrowButton.setFont(ARROW.getFont());
         arrowButton.setBackground(BUTTON_BLUE.getColor());
-        arrowButton.setForeground(TEXT_WHITE.getColor());
+        arrowButton.setForeground(TEXT_WHITE_SOFT.getColor());
         arrowButton.setBorder(createArrowBorder());
         arrowButton.setFocusPainted(false);
         arrowButton.setPreferredSize(new Dimension(35, 55));
@@ -151,36 +129,36 @@ public class MainView extends JFrame {
     }
 
     private void addHoverEffect(JButton button, Color hoverColor, Color normalColor) {
-        button.addMouseListener(new java.awt.event.MouseAdapter() {
+        button.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
+            public void mouseEntered(MouseEvent evt) {
                 button.setBackground(hoverColor);
             }
-            
+
             @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
+            public void mouseExited(MouseEvent evt) {
                 button.setBackground(normalColor);
             }
         });
     }
 
-    private JPanel createProfessionalButton() {
+    private JPanel createButton() {
         JPanel buttonContainer = new JPanel(new FlowLayout(FlowLayout.CENTER));
         buttonContainer.setBackground(CARD_COLOR.getColor());
         buttonContainer.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
-        
+
         buttonContainer.add(createStartButton());
         return buttonContainer;
     }
-    
+
     private JButton createStartButton() {
-        JButton startButton = new JButton("Iniciar Aventura");
+        JButton startButton = new JButton(Texts.init);
         setupButtonProperties(startButton);
         addComplexHoverEffect(startButton);
         addButtonAction(startButton);
         return startButton;
     }
-    
+
     private void setupButtonProperties(JButton button) {
         button.setFont(BUTTON.getFont());
         button.setPreferredSize(new Dimension(160, 40));
@@ -192,7 +170,7 @@ public class MainView extends JFrame {
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
         button.setBorder(createButtonBorder());
     }
-    
+
     private void addButtonAction(JButton button) {
         button.addActionListener(new ActionListener() {
             @Override
@@ -202,43 +180,36 @@ public class MainView extends JFrame {
             }
         });
     }
-    
+
     private void openGameView(String selectedBoard) {
         GameView gameView = new GameView(controller);
+        gameView.setSelectedBoard(selectedBoard);
         gameView.setVisible(true);
         this.dispose();
     }
-    
+
     private void addComplexHoverEffect(JButton button) {
-        button.addMouseListener(new java.awt.event.MouseAdapter() {
+        button.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                button.setBackground(CARD_COLOR.getColor());
+            public void mouseEntered(MouseEvent evt) {
+                button.setBackground(BUTTON_STATIONS_PURPLE.getColor());
             }
-            
+
             @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
+            public void mouseExited(MouseEvent evt) {
                 button.setBackground(BUTTON_BLUE.getColor());
             }
-            
+
             @Override
-            public void mousePressed(java.awt.event.MouseEvent evt) {
+            public void mousePressed(MouseEvent evt) {
                 button.setBackground(BACKGROUND_DARK_BLUE.getColor());
             }
-            
+
             @Override
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
+            public void mouseReleased(MouseEvent evt) {
                 button.setBackground(CARD_COLOR.getColor());
             }
         });
-    }
-
-    private JLabel createTitleLabel(String title) {
-        JLabel titleLabel = new JLabel(title, SwingConstants.CENTER);
-        titleLabel.setFont(TITLE.getFont());
-        titleLabel.setForeground(TEXT_WHITE_SOFT.getColor());
-        titleLabel.setOpaque(false);
-        return titleLabel;
     }
     
     private JPanel createPanel(Color backgroundColor) {
@@ -265,14 +236,14 @@ public class MainView extends JFrame {
     
     private CompoundBorder createCardBorder() {
         return BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(TEXT_GRAY.getColor(), 1),
+            BorderFactory.createLineBorder(TEXT_GRAY.getColor(), 0),
             createEmptyBorder(30, 40, 30, 40)
         );
     }
     
     private CompoundBorder createComboBorder() {
         return BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(TEXT_GRAY.getColor(), 1),
+            BorderFactory.createLineBorder(TEXT_GRAY.getColor(), 0),
             createEmptyBorder(8, 8, 8, 8)
         );
     }

@@ -7,13 +7,16 @@ import java.util.List;
 import java.util.Random;
 
 public class Grid {
-    private int[][] grid;
+    private int[][] gridMatrix;
     private List<IObserver> observers;
 
     public Grid(int[][] grid) {
+        this.observers = new ArrayList<>();
+    }
+
+    public void initGrid(int[][] grid) {
         validateGrid(grid);
-        this.grid = grid;
-        this.observers = new ArrayList<IObserver>();
+        this.gridMatrix = grid;
     }
 
     public Grid() {
@@ -35,8 +38,8 @@ public class Grid {
             }
         }
 
-        this.grid = gridData;
-        validateGrid(grid);
+        this.gridMatrix = gridData;
+        validateGrid(gridMatrix);
         this.observers = new ArrayList<IObserver>();
     }
 
@@ -51,15 +54,15 @@ public class Grid {
     }
 
     public int[][] getGrid() {
-        return this.grid;
+        return this.gridMatrix;
     }
 
     public int getRows() {
-        return grid.length;
+        return gridMatrix.length;
     }
 
     public int getColumns() {
-        return grid[0].length;
+        return gridMatrix[0].length;
     }
 
     private void validateGrid(int[][] grid) {
@@ -119,16 +122,13 @@ public class Grid {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Grid ").append(":\n");
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[i].length; j++) {
-                sb.append(grid[i][j]).append(" ");
+        for (int i = 0; i < gridMatrix.length; i++) {
+            for (int j = 0; j < gridMatrix[i].length; j++) {
+                sb.append(gridMatrix[i][j]).append(" ");
             }
             sb.append("\n");
         }
         return sb.toString();
     }
 
-    public List<Position> getBestRoute() throws Exception {
-        throw new Exception("TO BE IMPLEMENTED");
-    }
 }

@@ -58,7 +58,7 @@ class RobotTest {
     @Test
     void getBestRouteWithoutPruningOnValidGridReturnsValidPath() throws Exception {
         robot = new Robot(validSingleSolutionGrid);
-        List<List<Position>> paths = robot.getBestRouteWithoutPruning();
+        List<List<Position>> paths = robot.getRoutesWithoutPruning();
         for (List<Position> path : paths) {
             assertEquals(10, path.size(), "Each path should have 10 steps for 5x6 grid");
             assertTrue(isValidPath(path, robot.getGrid()), "Each path should be valid (right/down moves)");
@@ -70,7 +70,7 @@ class RobotTest {
     @Test
     void getBestRouteWithPruningOnValidGridReturnsValidPath() throws Exception {
         robot = new Robot(validSingleSolutionGrid);
-        List<List<Position>> paths = robot.getBestRouteWithPruning();
+        List<List<Position>> paths = robot.getRoutesWithPruning();
         for (List<Position> path : paths) {
             assertEquals(10, path.size(), "Each path should have 10 steps for 5x6 grid");
             assertTrue(isValidPath(path, robot.getGrid()), "Each path should be valid (right/down moves)");
@@ -82,23 +82,23 @@ class RobotTest {
     @Test
     void getBestRouteWithoutPruningNoSolutionsGridThrowsException() throws Exception {
         Robot robot = new Robot(validNoPosibleSolutionsGrid);
-        List<List<Position>> paths = robot.getBestRouteWithoutPruning();
+        List<List<Position>> paths = robot.getRoutesWithoutPruning();
         assertTrue(paths.isEmpty(), "Should throw [] for grid with no solutions");
     }
 
     @Test
     void getBestRouteWithPruningNoSolutionsGridThrowsException() throws Exception {
         Robot robot = new Robot(validNoPosibleSolutionsGrid);
-        List<List<Position>> paths = robot.getBestRouteWithPruning();
+        List<List<Position>> paths = robot.getRoutesWithPruning();
         assertTrue(paths.isEmpty(), "Should throw [] for grid with no solutions");
     }
 
     @Test
     void pruningMetricsFewerRecursiveCallsThanNonPruning() throws Exception {
         robot = new Robot(validSingleSolutionGrid);
-        robot.getBestRouteWithoutPruning();
+        robot.getRoutesWithoutPruning();
         int nonPruningCalls = robot.getNonPruningMetrics().getRecursiveCalls();
-        robot.getBestRouteWithPruning();
+        robot.getRoutesWithPruning();
         int pruningCalls = robot.getPruningMetrics().getRecursiveCalls();
         assertTrue(pruningCalls <= nonPruningCalls, "Pruning should reduce recursive calls");
     }
