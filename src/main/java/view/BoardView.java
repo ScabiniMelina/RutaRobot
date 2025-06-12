@@ -20,11 +20,14 @@ public class BoardView extends BaseView implements IObserver {
     private JTable gridTable;
     private DefaultTableModel tableModel;
     private JLabel selectedBoardLabel;
+    private JLabel messageLabel;
+    private BaseView parentMainView;
 
-    public BoardView(RobotController robotController) {
+    public BoardView(RobotController robotController, BaseView parentView) {
         super();
         this.robotController = robotController;
         setupGameView();
+        this.parentMainView = parentView;
     }
 
     private void setupGameView() {
@@ -89,7 +92,28 @@ public class BoardView extends BaseView implements IObserver {
         tableContainer.add(scrollPane);
 
         tablePanel.add(tableContainer, BorderLayout.CENTER);
+        tablePanel.add(createMessagePanel(), BorderLayout.SOUTH);
         return tablePanel;
+    }
+
+    private JPanel createMessagePanel() {
+        JPanel messagePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        messagePanel.setBackground(CARD_COLOR.getColor());
+        
+        messagePanel.add(createMessageLabel());
+        
+        return messagePanel;
+    }
+
+    private JLabel createMessageLabel() {
+        messageLabel = new JLabel();
+        messageLabel.setFont(LABEL.getFont());
+        messageLabel.setForeground(TRAIL_HIGH_IMPACT.getColor());
+        messageLabel.setHorizontalAlignment(JLabel.CENTER);
+        messageLabel.setVisible(false);
+        messageLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+        
+        return messageLabel;
     }
 
     private void setupTableAppearance() {
@@ -142,10 +166,28 @@ public class BoardView extends BaseView implements IObserver {
         buttonPanel.setBackground(BACKGROUND_DARK_BLUE.getColor());
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
 
+        buttonPanel.add(createBackButton());
         buttonPanel.add(createRouteButton(PRUNING_PATH));
         buttonPanel.add(createRouteButton(NO_PRUNING_PATH));
 
         return buttonPanel;
+    }
+
+    private Component createBackButton() {
+        JButton backButton = new JButton(BACK);
+        setupButtonProperties(backButton);
+        addBackButtonAction(backButton);
+        return backButton;
+    }
+
+    private void addBackButtonAction(JButton button) {
+        button.addActionListener(e -> {
+            // Volver al MainView
+            if (parentMainView != null) {
+                parentMainView.setVisible(true);
+            }
+            this.dispose();
+        });
     }
 
     private JButton createRouteButton(String text) {
@@ -197,15 +239,51 @@ public class BoardView extends BaseView implements IObserver {
     }
 
     private void addButtonAction(JButton button, String buttonText) {
-        button.addActionListener(e -> {
-            if (buttonText.equals(PRUNING_PATH)) {
-                List<Point> path = robotController.getBestRoutesWithPruning(0);
-                openReportView(path, PRUNING_ALGORITM);
-            } else {
-                List<Point> path = robotController.getBestRouteWithoutPruning(0);
-                openReportView(path, NO_PRUNING_ALGORITM);
+        button.addActionListener(y -> {
+            try {
+                if (buttonText.equals(PRUNING_PATH)) {
+                    List<Point> path = robotController.getBestRoutesWithPruning(0);
+                    openReportView(path, PRUNING_ALGORITM);
+                } else {
+                    List<Point> path = robotController.getBestRouteWithoutPruning(0);
+                    openReportView(path, NO_PRUNING_ALGORITM);
+                }
+            } catch (IndexOutOfBoundsException e){
+                showMessage(e.getMessage());
             }
         });
+    }
+
+    private void showMessage(String message) {
+        if (message != null && !message.trim().isEmpty()) {
+            displayMessage(message);
+            setupMessageTimer();
+        } else {
+            hideMessage();
+        }
+        
+        refreshInterface();
+    }
+
+    private void displayMessage(String message) {
+        messageLabel.setText(message);
+        messageLabel.setVisible(true);
+    }
+
+    private void hideMessage() {
+        messageLabel.setVisible(false);
+        messageLabel.setText("");
+    }
+
+    private void setupMessageTimer() {
+        Timer timer = new Timer(5000, e -> hideMessage());
+        timer.setRepeats(false);
+        timer.start();
+    }
+
+    private void refreshInterface() {
+        revalidate();
+        repaint();
     }
 
     private void openReportView(List<Point> path, String algorithmType) {

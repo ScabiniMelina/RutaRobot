@@ -153,7 +153,7 @@ public class MainView extends BaseView {
     private JButton createStartButton() {
         JButton startButton = new JButton(INIT);
         setupButtonProperties(startButton);
-        addComplexHoverEffect(startButton);
+        addHoverEffect(startButton);
         addButtonAction(startButton);
         return startButton;
     }
@@ -181,13 +181,13 @@ public class MainView extends BaseView {
     }
 
     private void openGameView(String selectedBoard) {
-        BoardView boardView = new BoardView(controller);
+        BoardView boardView = new BoardView(controller, this);
         boardView.setSelectedBoard(selectedBoard);
         boardView.setVisible(true);
         this.dispose();
     }
 
-    private void addComplexHoverEffect(JButton button) {
+    private void addHoverEffect(JButton button) {
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent evt) {
@@ -206,7 +206,7 @@ public class MainView extends BaseView {
 
             @Override
             public void mouseReleased(MouseEvent evt) {
-                button.setBackground(CARD_COLOR.getColor());
+                button.setBackground(BUTTON_STATIONS_PURPLE.getColor());
             }
         });
     }

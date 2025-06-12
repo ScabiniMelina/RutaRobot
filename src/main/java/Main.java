@@ -13,7 +13,7 @@ public class Main {
         Robot robot = new Robot(grid);
         RobotController controller = new RobotController(robot);
         MainView mainView = new MainView(controller);
-        BoardView boardView = new BoardView(controller);
+        BoardView boardView = new BoardView(controller, mainView);
         ReportView reportView = new ReportView(controller, boardView);
         mainView.setVisible(true);
 

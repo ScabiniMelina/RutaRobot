@@ -7,6 +7,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 import static view.util.ColorPalette.*;
@@ -19,9 +21,9 @@ public class ReportView extends BaseView implements IObserver {
     private DefaultTableModel tableModel;
     private JLabel titleLabel;
     private List<Point> highlightedPath;
-    private BoardView parentBoardView;
+    private BaseView parentBoardView;
 
-    public ReportView(RobotController robotController, BoardView parentBoardView) {
+    public ReportView(RobotController robotController, BaseView parentBoardView) {
         super();
         this.robotController = robotController;
         this.parentBoardView = parentBoardView;
@@ -45,11 +47,11 @@ public class ReportView extends BaseView implements IObserver {
     }
 
     private JPanel createHeaderPanel() {
-        JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         headerPanel.setBackground(BACKGROUND_DARK_BLUE.getColor());
         headerPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
 
-        titleLabel = new JLabel("Resultado del Algoritmo");
+        titleLabel = new JLabel(ALGORITHM_RESULT);
         titleLabel.setFont(LABEL.getFont());
         titleLabel.setForeground(TEXT_WHITE_SOFT.getColor());
 
@@ -114,14 +116,12 @@ public class ReportView extends BaseView implements IObserver {
                 setHorizontalAlignment(JLabel.CENTER);
                 setFont(COMBO.getFont());
                 
-                // Verificar si esta posición está en el camino resaltado
-                boolean isInPath = highlightedPath != null && 
+                boolean isInPath = highlightedPath != null &&
                     highlightedPath.stream().anyMatch(point -> point.x == row && point.y == column);
                 
                 if (!isSelected) {
                     if (isInPath) {
-                        // Resaltar en amarillo las posiciones del camino
-                        setBackground(Color.YELLOW);
+                        setBackground(BUTTON_STATIONS_PURPLE.getColor());
                         setForeground(BACKGROUND_DARK_BLUE.getColor());
                     } else if (value != null && value.toString().equals("1")) {
                         setBackground(GRID_LIGHT_GRAY.getColor());
@@ -134,7 +134,6 @@ public class ReportView extends BaseView implements IObserver {
                         setForeground(BACKGROUND_DARK_BLUE.getColor());
                     }
                 }
-                
                 return c;
             }
         };
@@ -147,8 +146,9 @@ public class ReportView extends BaseView implements IObserver {
         buttonPanel.setBackground(BACKGROUND_DARK_BLUE.getColor());
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
 
-        JButton backButton = new JButton("Volver");
+        JButton backButton = new JButton(BACK);
         setupBackButtonProperties(backButton);
+        addButtonHoverEffect(backButton);
         addBackButtonAction(backButton);
 
         buttonPanel.add(backButton);
@@ -169,6 +169,29 @@ public class ReportView extends BaseView implements IObserver {
             BorderFactory.createEmptyBorder(8, 20, 8, 20)
         ));
     }
+    private void addButtonHoverEffect(JButton button) {
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent evt) {
+                button.setBackground(BUTTON_STATIONS_PURPLE.getColor());
+            }
+
+            @Override
+            public void mouseExited(MouseEvent evt) {
+                button.setBackground(BUTTON_BLUE.getColor());
+            }
+
+            @Override
+            public void mousePressed(MouseEvent evt) {
+                button.setBackground(BACKGROUND_DARK_BLUE.getColor());
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent evt) {
+                button.setBackground(BUTTON_STATIONS_PURPLE.getColor());
+            }
+        });
+    }
 
     private void addBackButtonAction(JButton button) {
         button.addActionListener(e -> {
@@ -182,7 +205,7 @@ public class ReportView extends BaseView implements IObserver {
 
     public void setPathAndGrid(List<Point> path, String algorithmType) {
         this.highlightedPath = path;
-        titleLabel.setText("Resultado: " + algorithmType);
+        titleLabel.setText(RESULT + algorithmType);
         robotController.addGridObserver(this);
         updateGridTable();
     }

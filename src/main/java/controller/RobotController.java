@@ -7,6 +7,7 @@ import model.util.JsonReader;
 
 import java.awt.Point;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -58,7 +59,8 @@ public class RobotController {
     }
 
     public List<Point> getBestRoutesWithPruning(int index) {
-        List<Position> modelPath = robot.getRoutesWithPruning().get(index);
+        List<Position> modelPath = new ArrayList<>();
+            modelPath = robot.getRoutesWithPruning().get(index);
         return convertToPoints(modelPath);
     }
 

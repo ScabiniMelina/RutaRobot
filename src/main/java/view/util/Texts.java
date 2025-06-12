@@ -11,4 +11,7 @@ public class Texts {
     public static final String GRID_UPDATED = "GRID_UPDATED";
     public static final String PRUNING_ALGORITM = "Algoritmo con Podas";
     public static final String NO_PRUNING_ALGORITM = "Algoritmo de Fuerza Bruta";
+    public static final String ALGORITHM_RESULT = "Resultado del Algoritmo";
+    public static final String RESULT = "Resultado: ";
+    public static final String BACK = "Volver";
 }
