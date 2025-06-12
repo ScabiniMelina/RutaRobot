@@ -142,4 +142,27 @@ public class Grid {
             observer.update(eventType);
         }
     }
+
+    public void generateRandomGrid() {
+        Random random = new Random();
+
+        int pathLength = generateRandomEvenPathLength(random);
+        int totalGrid = pathLength + 1;
+        int rows = totalGrid / 2;
+        int cols = totalGrid - rows;
+
+        System.out.println("Generando grid aleatorio - pathLength: " + pathLength);
+        System.out.println("Dimensiones: " + rows + "x" + cols);
+
+        int[][] gridData = new int[rows][cols];
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                gridData[i][j] = random.nextBoolean() ? 1 : -1;
+            }
+        }
+
+        this.gridMatrix = gridData;
+        notifyObservers(GRID_UPDATED);
+    }
 }

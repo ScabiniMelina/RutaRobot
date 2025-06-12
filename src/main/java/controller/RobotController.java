@@ -23,6 +23,11 @@ public class RobotController {
     }
 
     public void setRobotGrid(String boardName) {
+        if (boardName.equals("RANDOM")) {
+            robot.getGrid().generateRandomGrid();
+            return;
+        }
+        
         String path = BoardName.getPathByName(boardName);
         
         if (path == null) {
