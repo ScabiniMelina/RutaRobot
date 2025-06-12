@@ -18,33 +18,12 @@ public class Grid {
     }
 
     public void initGrid(int[][] grid) {
-        validateGrid(grid);
         this.gridMatrix = grid;
+        validateGridValues();
         notifyObservers(GRID_UPDATED);
-
     }
 
     public Grid() {
-        Random random = new Random();
-
-        int pathLength = generateRandomEvenPathLength(random); // Generar pathLength par
-        int totalGrid = pathLength + 1;
-        int rows = totalGrid / 2;
-        int cols = totalGrid - rows;
-
-        System.out.println("pathLength: " + pathLength);
-        System.out.println("rows: " + rows + ", cols: " + cols);
-
-        int[][] gridData = new int[rows][cols];
-
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                gridData[i][j] = random.nextBoolean() ? 1 : -1;
-            }
-        }
-
-        this.gridMatrix = gridData;
-        validateGrid(gridMatrix);
         this.observers = new ArrayList<IObserver>();
     }
 
@@ -71,17 +50,12 @@ public class Grid {
         return gridMatrix[0].length;
     }
 
-    private void validateGrid(int[][] grid) {
-        validateGridSize(grid);
-        validateGridValues(grid);
-    }
-
-    private void validateGridSize(int[][] grid) {
-        if (isGridNull(grid)) {
+    public void validateGridSize() {
+        if (isGridNull(gridMatrix)) {
             throw new IllegalArgumentException("Grid cannot be null");
         }
-        int rows = grid.length;
-        int cols = grid[0].length;
+        int rows = gridMatrix.length;
+        int cols = gridMatrix[0].length;
         int pathLength = rows + cols - 1;
         if (isPathLengthOdd(pathLength)) {
             throw new IllegalArgumentException(
@@ -90,10 +64,10 @@ public class Grid {
         }
     }
 
-    private void validateGridValues(int[][] grid) {
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[i].length; j++) {
-                int value = grid[i][j];
+    private void validateGridValues() {
+        for (int i = 0; i < gridMatrix.length; i++) {
+            for (int j = 0; j < gridMatrix[i].length; j++) {
+                int value = gridMatrix[i][j];
                 if (isInvalidGridValue(value)) {
                     throw new IllegalArgumentException(
                             "Invalid value at [" + i + "][" + j + "]: " + value +

@@ -29,6 +29,7 @@ public class Robot {
     }
 
     public List<List<Position>> getRoutesWithoutPruning(){
+        grid.validateGridSize();
         nonPruningMetric.reset();
         nonPruningMetric.startTimer();
         allValidPaths.clear();
@@ -40,6 +41,7 @@ public class Robot {
     }
 
     public List<List<Position>> getRoutesWithPruning(){
+        grid.validateGridSize();
         pruningMetric.reset();
         pruningMetric.startTimer();
         allValidPaths.clear();

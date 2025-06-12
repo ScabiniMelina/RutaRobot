@@ -182,7 +182,6 @@ public class BoardView extends BaseView implements IObserver {
 
     private void addBackButtonAction(JButton button) {
         button.addActionListener(e -> {
-            // Volver al MainView
             if (parentMainView != null) {
                 parentMainView.setVisible(true);
             }
@@ -249,7 +248,9 @@ public class BoardView extends BaseView implements IObserver {
                     openReportView(path, NO_PRUNING_ALGORITM);
                 }
             } catch (IndexOutOfBoundsException e){
-                showMessage(e.getMessage());
+                showMessage(NO_WAY);
+            } catch (IllegalArgumentException e) {
+                showMessage(ODD_BOARD);
             }
         });
     }

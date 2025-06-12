@@ -14,4 +14,6 @@ public class Texts {
     public static final String ALGORITHM_RESULT = "Resultado del Algoritmo";
     public static final String RESULT = "Resultado: ";
     public static final String BACK = "Volver";
+    public static final String NO_WAY = "No existen caminos cuya suma de pesos de cero";
+    public static final String ODD_BOARD = "El numero de pasos es impar, no existen caminos cuya suma de pesos de cero";
 }
