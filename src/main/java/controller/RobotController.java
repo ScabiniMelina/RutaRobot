@@ -99,4 +99,12 @@ public class RobotController {
     public double getNonPruningExecutionTimeMs(){
         return robot.getNonPruningMetrics().getExecutionTimeMs();
     }
+
+    public int getPruningValidRoutesCount() {
+        return robot.getRoutesWithPruning().size();
+    }
+
+    public int getNonPruningValidRoutesCount() {
+        return robot.getRoutesWithoutPruning().size();
+    }
 }

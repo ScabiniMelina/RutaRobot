@@ -23,9 +23,10 @@ public class ReportView extends BaseView implements IObserver {
     private List<Point> highlightedPath;
     private BaseView parentBoardView;
     private String currentAlgorithmType;
-    private JLabel exploredPathsLabel;
-    private JLabel recursiveCallsLabel;
-    private JLabel executionTimeLabel;
+    private JTable metricsTable;
+    private DefaultTableModel metricsTableModel;
+    private JComboBox<String> routeSelector;
+    private int currentRouteIndex;
 
     public ReportView(RobotController robotController, BaseView parentBoardView) {
         super();
@@ -51,7 +52,7 @@ public class ReportView extends BaseView implements IObserver {
     }
 
     private JPanel createHeaderPanel() {
-        JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(BACKGROUND_DARK_BLUE.getColor());
         headerPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
 
@@ -59,8 +60,54 @@ public class ReportView extends BaseView implements IObserver {
         titleLabel.setFont(LABEL.getFont());
         titleLabel.setForeground(TEXT_WHITE_SOFT.getColor());
 
-        headerPanel.add(titleLabel);
+        JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        leftPanel.setBackground(BACKGROUND_DARK_BLUE.getColor());
+        leftPanel.add(titleLabel);
+
+        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        rightPanel.setBackground(BACKGROUND_DARK_BLUE.getColor());
+        rightPanel.add(createRouteSelector());
+
+        headerPanel.add(leftPanel, BorderLayout.WEST);
+        headerPanel.add(rightPanel, BorderLayout.EAST);
+        
         return headerPanel;
+    }
+
+    private JPanel createRouteSelector() {
+        JPanel selectorPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
+        selectorPanel.setBackground(BACKGROUND_DARK_BLUE.getColor());
+
+        JLabel selectorLabel = new JLabel(ROUTE_SELECTOR_LABEL);
+        selectorLabel.setFont(COMBO.getFont());
+        selectorLabel.setForeground(TEXT_WHITE_SOFT.getColor());
+
+        routeSelector = new JComboBox<>();
+        setupRouteSelectorProperties();
+        addRouteSelectorAction();
+
+        selectorPanel.add(selectorLabel);
+        selectorPanel.add(routeSelector);
+
+        return selectorPanel;
+    }
+
+    private void setupRouteSelectorProperties() {
+        routeSelector.setFont(COMBO.getFont());
+        routeSelector.setBackground(TEXT_WHITE_SOFT.getColor());
+        routeSelector.setForeground(BACKGROUND_DARK_BLUE.getColor());
+        routeSelector.setPreferredSize(new Dimension(120, 30));
+        routeSelector.setFocusable(false);
+    }
+
+    private void addRouteSelectorAction() {
+        routeSelector.addActionListener(e -> {
+            int selectedIndex = routeSelector.getSelectedIndex();
+            if (selectedIndex >= 0) {
+                currentRouteIndex = selectedIndex;
+                updateSelectedRoute();
+            }
+        });
     }
 
     private JPanel createContentPanel() {
@@ -68,7 +115,12 @@ public class ReportView extends BaseView implements IObserver {
         contentPanel.setBackground(BACKGROUND_DARK_BLUE.getColor());
 
         contentPanel.add(createTablePanel(), BorderLayout.CENTER);
-        contentPanel.add(createMetricsPanel(), BorderLayout.EAST);
+        
+        JPanel rightPanel = new JPanel(new BorderLayout());
+        rightPanel.setBackground(BACKGROUND_DARK_BLUE.getColor());
+        rightPanel.add(createMetricsPanel(), BorderLayout.NORTH);
+        
+        contentPanel.add(rightPanel, BorderLayout.EAST);
 
         return contentPanel;
     }
@@ -78,7 +130,7 @@ public class ReportView extends BaseView implements IObserver {
         tablePanel.setBackground(CARD_COLOR.getColor());
         tablePanel.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(TEXT_GRAY.getColor(), 1),
-            BorderFactory.createEmptyBorder(20, 20, 20, 20)
+            BorderFactory.createEmptyBorder(15, 15, 15, 15)
         ));
 
         tableModel = new DefaultTableModel();
@@ -90,7 +142,7 @@ public class ReportView extends BaseView implements IObserver {
         scrollPane.setBackground(CARD_COLOR.getColor());
         scrollPane.getViewport().setBackground(CARD_COLOR.getColor());
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
-        scrollPane.setPreferredSize(new Dimension(400, 300));
+        scrollPane.setPreferredSize(new Dimension(350, 280));
 
         JPanel tableContainer = new JPanel(new FlowLayout(FlowLayout.CENTER));
         tableContainer.setBackground(CARD_COLOR.getColor());
@@ -107,7 +159,7 @@ public class ReportView extends BaseView implements IObserver {
             BorderFactory.createLineBorder(TEXT_GRAY.getColor(), 1),
             BorderFactory.createEmptyBorder(20, 20, 20, 20)
         ));
-        metricsPanel.setPreferredSize(new Dimension(300, 0));
+        metricsPanel.setPreferredSize(new Dimension(400, 300));
 
         metricsPanel.add(createMetricsHeader(), BorderLayout.NORTH);
         metricsPanel.add(createMetricsContent(), BorderLayout.CENTER);
@@ -126,47 +178,69 @@ public class ReportView extends BaseView implements IObserver {
     }
 
     private JPanel createMetricsContent() {
-        JPanel contentPanel = new JPanel(new GridBagLayout());
+        JPanel contentPanel = new JPanel(new BorderLayout());
         contentPanel.setBackground(CARD_COLOR.getColor());
         
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.insets = new Insets(10, 0, 10, 0);
-        gbc.gridx = 0;
-
-        gbc.gridy = 0;
-        contentPanel.add(createMetricLabel(EXPLORED_PATHS_METRIC), gbc);
-        gbc.gridy = 1;
-        exploredPathsLabel = createMetricValueLabel();
-        contentPanel.add(exploredPathsLabel, gbc);
-
-        gbc.gridy = 2;
-        contentPanel.add(createMetricLabel(RECURSIVE_CALLS_METRIC), gbc);
-        gbc.gridy = 3;
-        recursiveCallsLabel = createMetricValueLabel();
-        contentPanel.add(recursiveCallsLabel, gbc);
-
-        gbc.gridy = 4;
-        contentPanel.add(createMetricLabel(EXECUTION_TIME_METRIC), gbc);
-        gbc.gridy = 5;
-        executionTimeLabel = createMetricValueLabel();
-        contentPanel.add(executionTimeLabel, gbc);
-
+        createMetricsTable();
+        setupMetricsTableAppearance();
+        
+        JScrollPane scrollPane = new JScrollPane(metricsTable);
+        scrollPane.setBackground(CARD_COLOR.getColor());
+        scrollPane.getViewport().setBackground(CARD_COLOR.getColor());
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        scrollPane.setPreferredSize(new Dimension(360, 160));
+        
+        contentPanel.add(scrollPane, BorderLayout.CENTER);
+        
         return contentPanel;
     }
 
-    private JLabel createMetricLabel(String text) {
-        JLabel label = new JLabel(text);
-        label.setFont(COMBO.getFont());
-        label.setForeground(TEXT_WHITE_SOFT.getColor());
-        return label;
+    private void createMetricsTable() {
+        String[] columnNames = {"Métrica", "Valor"};
+        String[][] data = {
+            {EXPLORED_PATHS_METRIC, "0"},
+            {VALID_ROUTES_METRIC, "0"},
+            {RECURSIVE_CALLS_METRIC, "0"},
+            {EXECUTION_TIME_METRIC, "0.00"},
+            {GRID_SIZE_METRIC, "0x0"}
+        };
+        
+        metricsTableModel = new DefaultTableModel(data, columnNames) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Hacer la tabla no editable
+            }
+        };
+        
+        metricsTable = new JTable(metricsTableModel);
     }
 
-    private JLabel createMetricValueLabel() {
-        JLabel label = new JLabel("0");
-        label.setFont(BUTTON.getFont());
-        label.setForeground(BUTTON_BLUE.getColor());
-        return label;
+    private void setupMetricsTableAppearance() {
+        metricsTable.setFont(COMBO.getFont());
+        metricsTable.setBackground(TEXT_WHITE_SOFT.getColor());
+        metricsTable.setForeground(BACKGROUND_DARK_BLUE.getColor());
+        metricsTable.setSelectionBackground(BUTTON_BLUE.getColor());
+        metricsTable.setSelectionForeground(TEXT_WHITE_SOFT.getColor());
+        metricsTable.setRowHeight(25);
+        metricsTable.setShowGrid(true);
+        metricsTable.setGridColor(TEXT_GRAY.getColor());
+        metricsTable.setEnabled(false);
+        
+        // Configurar el header
+        metricsTable.getTableHeader().setFont(BOLD_LABEL.getFont());
+        metricsTable.getTableHeader().setBackground(BUTTON_BLUE.getColor());
+        metricsTable.getTableHeader().setForeground(TEXT_WHITE_SOFT.getColor());
+        
+        // Configurar el ancho de las columnas
+        metricsTable.getColumnModel().getColumn(0).setPreferredWidth(260);
+        metricsTable.getColumnModel().getColumn(1).setPreferredWidth(100);
+        
+        // Renderer personalizado para la columna de valores
+        DefaultTableCellRenderer valueRenderer = new DefaultTableCellRenderer();
+        valueRenderer.setHorizontalAlignment(JLabel.CENTER);
+        valueRenderer.setFont(BUTTON.getFont());
+        valueRenderer.setForeground(BUTTON_BLUE.getColor());
+        metricsTable.getColumnModel().getColumn(1).setCellRenderer(valueRenderer);
     }
 
     private void setupTableAppearance() {
@@ -280,8 +354,10 @@ public class ReportView extends BaseView implements IObserver {
     public void setPathAndGrid(List<Point> path, String algorithmType) {
         this.highlightedPath = path;
         this.currentAlgorithmType = algorithmType;
+        this.currentRouteIndex = 0;
         titleLabel.setText(RESULT + algorithmType);
         robotController.addGridObserver(this);
+        setupRouteSelector();
         updateGridTable();
         updateMetrics();
     }
@@ -349,10 +425,71 @@ public class ReportView extends BaseView implements IObserver {
     }
 
     private void updateMetricLabels(int exploredPaths, int recursiveCalls, double executionTime) {
-        exploredPathsLabel.setText(String.valueOf(exploredPaths));
-        recursiveCallsLabel.setText(String.valueOf(recursiveCalls));
-        executionTimeLabel.setText(String.format("%.2f", executionTime));
+        int validRoutes = getRouteCount();
+        String gridSize = getGridSize();
+        
+        // Actualizar valores en la tabla
+        metricsTableModel.setValueAt(String.valueOf(exploredPaths), 0, 1);
+        metricsTableModel.setValueAt(String.valueOf(validRoutes), 1, 1);
+        metricsTableModel.setValueAt(String.valueOf(recursiveCalls), 2, 1);
+        metricsTableModel.setValueAt(String.format("%.2f", executionTime), 3, 1);
+        metricsTableModel.setValueAt(gridSize, 4, 1);
         
         repaint();
     }
+
+    private String getGridSize() {
+        int[][] grid = robotController.getRobotGrid();
+        if (grid != null && grid.length > 0) {
+            int rows = grid.length;
+            int cols = grid[0].length;
+            return rows + "x" + cols;
+        } else {
+            return "0x0";
+        }
+    }
+
+    private void setupRouteSelector() {
+        routeSelector.removeAllItems();
+        
+        int routeCount = getRouteCount();
+        
+        for (int i = 0; i < routeCount; i++) {
+            routeSelector.addItem("Ruta " + (i + 1));
+        }
+        
+        if (routeCount > 0) {
+            routeSelector.setSelectedIndex(0);
+            routeSelector.setEnabled(routeCount > 1);
+        }
+    }
+
+    private int getRouteCount() {
+        if (currentAlgorithmType != null) {
+            if (currentAlgorithmType.equals(PRUNING_ALGORITM)) {
+                return robotController.getPruningValidRoutesCount();
+            } else if (currentAlgorithmType.equals(NO_PRUNING_ALGORITM)) {
+                return robotController.getNonPruningValidRoutesCount();
+            }
+        }
+        return 0;
+    }
+
+    private void updateSelectedRoute() {
+        try {
+            List<Point> newPath;
+            if (currentAlgorithmType.equals(PRUNING_ALGORITM)) {
+                newPath = robotController.getBestRoutesWithPruning(currentRouteIndex);
+            } else {
+                newPath = robotController.getBestRouteWithoutPruning(currentRouteIndex);
+            }
+            
+            this.highlightedPath = newPath;
+            updateGridTable();
+        } catch (IndexOutOfBoundsException e) {
+            // Si el índice no es válido, mantener la ruta actual
+            System.err.println("Índice de ruta no válido: " + currentRouteIndex);
+        }
+    }
 }
+
