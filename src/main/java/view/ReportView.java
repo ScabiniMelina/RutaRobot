@@ -1,7 +1,6 @@
 package view;
 
 import controller.RobotController;
-import model.Position;
 import observer.IObserver;
 
 import javax.swing.*;
@@ -19,7 +18,7 @@ public class ReportView extends BaseView implements IObserver {
     private JTable gridTable;
     private DefaultTableModel tableModel;
     private JLabel titleLabel;
-    private List<Position> highlightedPath;
+    private List<Point> highlightedPath;
     private BoardView parentBoardView;
 
     public ReportView(RobotController robotController, BoardView parentBoardView) {
@@ -117,7 +116,7 @@ public class ReportView extends BaseView implements IObserver {
                 
                 // Verificar si esta posición está en el camino resaltado
                 boolean isInPath = highlightedPath != null && 
-                    highlightedPath.stream().anyMatch(pos -> pos.getX() == row && pos.getY() == column);
+                    highlightedPath.stream().anyMatch(point -> point.x == row && point.y == column);
                 
                 if (!isSelected) {
                     if (isInPath) {
@@ -181,7 +180,7 @@ public class ReportView extends BaseView implements IObserver {
         });
     }
 
-    public void setPathAndGrid(List<Position> path, String algorithmType) {
+    public void setPathAndGrid(List<Point> path, String algorithmType) {
         this.highlightedPath = path;
         titleLabel.setText("Resultado: " + algorithmType);
         robotController.addGridObserver(this);

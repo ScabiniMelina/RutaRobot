@@ -12,6 +12,7 @@ public class Grid {
     private int[][] gridMatrix;
     private List<IObserver> observers;
 
+
     public Grid(int[][] grid) {
         this.observers = new ArrayList<>();
     }
@@ -20,6 +21,7 @@ public class Grid {
         validateGrid(grid);
         this.gridMatrix = grid;
         notifyObservers(GRID_UPDATED);
+
     }
 
     public Grid() {
@@ -61,10 +63,11 @@ public class Grid {
     }
 
     public int getRows() {
-        return gridMatrix.length;
+        return (gridMatrix != null) ? gridMatrix.length : 0;
     }
 
     public int getColumns() {
+        if (gridMatrix == null || gridMatrix.length == 0) return 0;
         return gridMatrix[0].length;
     }
 

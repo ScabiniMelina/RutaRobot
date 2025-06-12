@@ -10,8 +10,6 @@ public class Robot {
     private Grid grid;
     private List<List<Position>> allValidPaths;
     private List<IObserver> observers;
-    private final int lastRow;
-    private final int lastColumn;
     private Metric nonPruningMetric;
     private Metric pruningMetric;
 
@@ -20,8 +18,6 @@ public class Robot {
             throw new IllegalArgumentException("Grid cannot be null");
         }
         this.grid = grid;
-        this.lastRow = grid.getRows() - 1;
-        this.lastColumn = grid.getColumns() - 1;
         this.allValidPaths = new ArrayList<>();
         this.observers = new ArrayList<>();
         this.nonPruningMetric = new Metric();
@@ -32,7 +28,7 @@ public class Robot {
         this.observers.add(observer);
     }
 
-    public List<List<Position>> getRoutesWithoutPruning() throws Exception {
+    public List<List<Position>> getRoutesWithoutPruning(){
         nonPruningMetric.reset();
         nonPruningMetric.startTimer();
         allValidPaths.clear();
@@ -43,12 +39,11 @@ public class Robot {
         return new ArrayList<>(allValidPaths);
     }
 
-    public List<List<Position>> getRoutesWithPruning() throws Exception {
+    public List<List<Position>> getRoutesWithPruning(){
         pruningMetric.reset();
         pruningMetric.startTimer();
         allValidPaths.clear();
         List<Position> currentPath = new ArrayList<>();
-        currentPath.add(new Position(0, 0));
         findPathWithPruning(0, 0, grid.getGrid()[0][0], currentPath);
         pruningMetric.stopTimer();
         return new ArrayList<>(allValidPaths);
@@ -90,7 +85,7 @@ public class Robot {
         }
 
 
-        int stepsLeft = (lastRow - x) + (lastColumn - y);
+        int stepsLeft = (grid.getRows() - x) + (grid.getColumns() - y);
 
         // Poda por paridad: si los pasos restantes más la suma actual no permiten balancear a cero (paridad)
         // Es decir, si la suma y los pasos restantes tienen distinta paridad, no puede llegar a cero
@@ -114,15 +109,15 @@ public class Robot {
     }
 
     public boolean isAtDestination(int x, int y) {
-        return x == lastRow && y == lastColumn;
+        return x == (grid.getRows() -1) && y == (grid.getColumns() - 1);
     }
 
     public boolean canMoveRight(int y) {
-        return y < lastColumn;
+        return y < (grid.getColumns() - 1);
     }
 
     public boolean canMoveDown(int x) {
-        return x < lastRow;
+        return x < (grid.getRows() - 1);
     }
 
     private boolean isBalanceImpossible(int sum, int stepsLeft) {

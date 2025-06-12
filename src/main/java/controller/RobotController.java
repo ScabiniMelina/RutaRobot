@@ -5,9 +5,11 @@ import model.Position;
 import model.Robot;
 import model.util.JsonReader;
 
+import java.awt.Point;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RobotController {
     private Robot robot;
@@ -45,12 +47,20 @@ public class RobotController {
         robot.getGrid().addObserver(observer);
     }
 
-    public List<Position> getBestRouteWithoutPruning(int index) throws Exception {
-        return robot.getRoutesWithoutPruning().get(index);
+    public List<Point> getBestRouteWithoutPruning(int index) {
+        List<Position> modelPath = robot.getRoutesWithoutPruning().get(index);
+        return convertToPoints(modelPath);
     }
 
-    public List<Position> getBestRoutesWithPruning(int index) throws Exception {
-        return robot.getRoutesWithPruning().get(index);
+    public List<Point> getBestRoutesWithPruning(int index) {
+        List<Position> modelPath = robot.getRoutesWithPruning().get(index);
+        return convertToPoints(modelPath);
+    }
+
+    private List<Point> convertToPoints(List<Position> positions) {
+        return positions.stream()
+                .map(pos -> new Point(pos.getX(), pos.getY()))
+                .collect(Collectors.toList());
     }
 
     public String[] getBoardNames() {

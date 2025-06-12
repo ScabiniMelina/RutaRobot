@@ -4,7 +4,6 @@ import java.util.concurrent.TimeUnit;
 
 public class Metric {
 
-
     private int exploredPaths;
     private int recursiveCalls;
     private long executionTime;

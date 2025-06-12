@@ -1,13 +1,14 @@
 package view;
 
 import controller.RobotController;
-import model.Position;
 import observer.IObserver;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 import static view.util.ColorPalette.*;
@@ -172,24 +173,24 @@ public class BoardView extends BaseView implements IObserver {
     }
 
     private void addButtonHoverEffect(JButton button) {
-        button.addMouseListener(new java.awt.event.MouseAdapter() {
+        button.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
+            public void mouseEntered(MouseEvent evt) {
                 button.setBackground(BUTTON_STATIONS_PURPLE.getColor());
             }
 
             @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
+            public void mouseExited(MouseEvent evt) {
                 button.setBackground(BUTTON_BLUE.getColor());
             }
 
             @Override
-            public void mousePressed(java.awt.event.MouseEvent evt) {
+            public void mousePressed(MouseEvent evt) {
                 button.setBackground(BACKGROUND_DARK_BLUE.getColor());
             }
 
             @Override
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
+            public void mouseReleased(MouseEvent evt) {
                 button.setBackground(BUTTON_STATIONS_PURPLE.getColor());
             }
         });
@@ -197,21 +198,17 @@ public class BoardView extends BaseView implements IObserver {
 
     private void addButtonAction(JButton button, String buttonText) {
         button.addActionListener(e -> {
-            try {
-                if (buttonText.equals(PRUNING_PATH)) {
-                    List<Position> path = robotController.getBestRoutesWithPruning(0);
-                    openReportView(path, "Algoritmo con Podas");
-                } else if (buttonText.equals(NO_PRUNING_PATH)) {
-                    List<Position> path = robotController.getBestRouteWithoutPruning(0);
-                    openReportView(path, "Algoritmo de Fuerza Bruta");
-                }
-            } catch (Exception ex) {
-                System.err.println("Error al ejecutar el algoritmo: " + ex.getMessage());
+            if (buttonText.equals(PRUNING_PATH)) {
+                List<Point> path = robotController.getBestRoutesWithPruning(0);
+                openReportView(path, PRUNING_ALGORITM);
+            } else {
+                List<Point> path = robotController.getBestRouteWithoutPruning(0);
+                openReportView(path, NO_PRUNING_ALGORITM);
             }
         });
     }
 
-    private void openReportView(List<Position> path, String algorithmType) {
+    private void openReportView(List<Point> path, String algorithmType) {
         ReportView reportView = new ReportView(robotController, this);
         reportView.setPathAndGrid(path, algorithmType);
         reportView.setVisible(true);
@@ -260,3 +257,4 @@ public class BoardView extends BaseView implements IObserver {
         gridTable.repaint();
     }
 }
+

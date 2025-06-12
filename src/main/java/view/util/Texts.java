@@ -9,4 +9,6 @@ public class Texts {
     public static final String NO_PRUNING_PATH = "Recorrer con Fuerza Bruta";
     public static final String BOARD_SELECTED = "Tablero seleccionado: ";
     public static final String GRID_UPDATED = "GRID_UPDATED";
+    public static final String PRUNING_ALGORITM = "Algoritmo con Podas";
+    public static final String NO_PRUNING_ALGORITM = "Algoritmo de Fuerza Bruta";
 }
