@@ -44,6 +44,7 @@ public class Robot {
         pruningMetric.startTimer();
         allValidPaths.clear();
         List<Position> currentPath = new ArrayList<>();
+        currentPath.add(new Position(0, 0));
         findPathWithPruning(0, 0, grid.getGrid()[0][0], currentPath);
         pruningMetric.stopTimer();
         return new ArrayList<>(allValidPaths);
