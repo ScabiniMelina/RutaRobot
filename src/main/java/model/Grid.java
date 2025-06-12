@@ -13,7 +13,7 @@ public class Grid {
     private List<IObserver> observers;
 
 
-    public Grid(int[][] grid) {
+    public Grid() {
         this.observers = new ArrayList<>();
     }
 
@@ -21,10 +21,6 @@ public class Grid {
         this.gridMatrix = grid;
         validateGridValues();
         notifyObservers(GRID_UPDATED);
-    }
-
-    public Grid() {
-        this.observers = new ArrayList<IObserver>();
     }
 
     public void addObserver(IObserver observer) {
@@ -95,7 +91,7 @@ public class Grid {
     }
 
     private int generateRandomEvenPathLength(Random random) {
-        return 2 + random.nextInt(5) * 2; // 2, 4, 6, ..., 18
+        return 4 + random.nextInt(5) * 2; // 2, 4, 6, ..., 18
     }
 
     @Override

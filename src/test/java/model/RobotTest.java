@@ -14,34 +14,30 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class RobotTest {
     private Robot robot;
     private Grid validMultiplesSolutionsGrid, validSingleSolutionGrid, validNoPosibleSolutionsGrid;
-    private Grid invalidGrid, invalidEmptyGrid ;
 
     @BeforeEach
     void setUp() throws IOException {
         int[][] validMultipleSolutionsGridData = JsonReader.readGridFromJSON("multiple_zero_paths_5x6.json");
-        validMultiplesSolutionsGrid = new Grid(validMultipleSolutionsGridData);
+        validMultiplesSolutionsGrid = new Grid();
+        validMultiplesSolutionsGrid.initGrid(validMultipleSolutionsGridData);
 
         int[][] validSingleSolutionGridData = JsonReader.readGridFromJSON("single_zero_path_5x6.json");
-       validSingleSolutionGrid = new Grid(validSingleSolutionGridData);
+        validSingleSolutionGrid = new Grid();
+        validSingleSolutionGrid.initGrid(validSingleSolutionGridData);
 
         int[][] validNoPosibleSolutionsGridData = JsonReader.readGridFromJSON("no_zero_path_5x6.json");
-        validNoPosibleSolutionsGrid = new Grid(validNoPosibleSolutionsGridData);
-
-        // Invalid 3x3 grid (all +1s, no zero-sum path)
-        int[][] invalidGridData = {
-                {1, 1, 1},
-                {1, 1, 1},
-                {1, 1, 1}
-        };
-        //invalidGrid = new Grid(invalidGridData);
-
+        validNoPosibleSolutionsGrid = new Grid();
+        validNoPosibleSolutionsGrid.initGrid(validNoPosibleSolutionsGridData);
 
     }
 
     @Test
     void canMoveRight_checksBoundary() {
         int[][] gridData = {{1, -1}, {-1, 1},{-1, 1}};
-        Robot robot = new Robot(new Grid(gridData));
+        Grid grid = new Grid();
+        grid.initGrid(gridData);
+        Robot robot = new Robot(grid);
+
         assertTrue(robot.canMoveRight( 0), "Should allow move right from y=0");
         assertFalse(robot.canMoveRight( 1), "Should not allow move right from y=1");
     }
@@ -49,7 +45,9 @@ class RobotTest {
     @Test
     void canMoveDown_checksBoundary() {
         int[][] gridData = {{1, -1}, {-1, 1},{-1, 1}};
-        Robot robot = new Robot(new Grid(gridData));
+        Grid grid = new Grid();
+        grid.initGrid(gridData);
+        Robot robot = new Robot(grid);
         assertTrue(robot.canMoveDown(1), "Should allow move down from x=1");
         assertFalse(robot.canMoveDown(2), "Should not allow move down from x=2");
     }

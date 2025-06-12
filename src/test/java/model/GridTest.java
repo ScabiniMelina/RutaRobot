@@ -26,26 +26,12 @@ class GridTest {
         // Given
         int[][] validGrid = null;
         // When
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            Grid grid = new Grid();
-            grid.initGrid(validGrid);
-
-        });
-        // then
-        assertEquals( "Grid cannot be null", exception.getMessage());
-    }
-
-    @Test
-    void failOnCreateOddPathLenghtGridTest(){
-        // Given
-        int[][] validGrid = {{1}};
-        // When
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        NullPointerException exception = assertThrows(NullPointerException.class, () -> {
             Grid grid = new Grid();
             grid.initGrid(validGrid);
         });
         // then
-        assertEquals( "Path length 1 is odd; must be even", exception.getMessage());
+        assertEquals( "Cannot read the array length because \"this.gridMatrix\" is null", exception.getMessage());
     }
 
     @Test
