@@ -16,4 +16,8 @@ public class Texts {
     public static final String BACK = "Volver";
     public static final String NO_WAY = "No existen caminos cuya suma de pesos de cero";
     public static final String ODD_BOARD = "El numero de pasos es impar, no existen caminos cuya suma de pesos de cero";
+    public static final String METRICS_TITLE = "Métricas del Algoritmo";
+    public static final String EXPLORED_PATHS_METRIC = "Caminos Explorados:";
+    public static final String RECURSIVE_CALLS_METRIC = "Llamadas Recursivas:";
+    public static final String EXECUTION_TIME_METRIC = "Tiempo de Ejecución (ms):";
 }

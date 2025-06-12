@@ -75,4 +75,28 @@ public class RobotController {
                 .map(BoardName::toString)
                 .toArray(String[]::new);
     }
+
+    public int getPruningExploredPaths(){
+        return robot.getPruningMetrics().getExploredPaths();
+    }
+
+    public int getNonPruningExploredPaths(){
+        return robot.getNonPruningMetrics().getExploredPaths();
+    }
+
+    public int getPruningRecursiveCalls(){
+        return robot.getPruningMetrics().getRecursiveCalls();
+    }
+
+    public int getNonPruningRecursiveCalls(){
+        return robot.getNonPruningMetrics().getRecursiveCalls();
+    }
+
+    public double getPruningExecutionTimeMs(){
+        return robot.getPruningMetrics().getExecutionTimeMs();
+    }
+
+    public double getNonPruningExecutionTimeMs(){
+        return robot.getNonPruningMetrics().getExecutionTimeMs();
+    }
 }
