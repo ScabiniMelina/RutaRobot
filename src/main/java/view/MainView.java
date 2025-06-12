@@ -13,8 +13,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import static view.util.ColorPalette.*;
 import static view.util.FontPalette.*;
-import static view.util.Texts.BOARD_SELECTION;
-import static view.util.Texts.INIT;
+import static view.util.Texts.*;
+
 
 public class MainView extends BaseView {
     RobotController controller;

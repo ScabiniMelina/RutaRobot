@@ -5,6 +5,7 @@ import java.awt.Font;
 public enum FontPalette {
     TITLE_FONT(new Font("Segoe UI", Font.BOLD, 28)),
     LABEL(new Font("Segoe UI", Font.PLAIN, 14)),
+    BOLD_LABEL(new Font("Segoe UI", Font.BOLD, 14)),
     COMBO(new Font("Segoe UI", Font.PLAIN, 14)),
     BUTTON(new Font("Segoe UI", Font.BOLD, 14)),
     ARROW(new Font("Segoe UI", Font.PLAIN, 12));

@@ -117,7 +117,7 @@ public class ReportView extends BaseView implements IObserver {
 
     private JLabel createMetricsHeader() {
         JLabel headerLabel = new JLabel(METRICS_TITLE);
-        headerLabel.setFont(LABEL.getFont());
+        headerLabel.setFont(BOLD_LABEL.getFont());
         headerLabel.setForeground(TEXT_WHITE_SOFT.getColor());
         headerLabel.setHorizontalAlignment(JLabel.CENTER);
         headerLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));

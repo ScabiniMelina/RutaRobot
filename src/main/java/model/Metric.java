@@ -39,7 +39,7 @@ public class Metric {
     }
 
     public double getExecutionTimeMs() {
-        return TimeUnit.NANOSECONDS.toMillis(executionTime);
+        return executionTime / 1_000_000.0;
     }
 
     @Override

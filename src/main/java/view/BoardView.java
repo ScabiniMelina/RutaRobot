@@ -202,7 +202,7 @@ public class BoardView extends BaseView implements IObserver {
         button.setFont(BUTTON.getFont());
         button.setPreferredSize(new Dimension(250, 40));
         button.setBackground(BUTTON_BLUE.getColor());
-        button.setForeground(Color.WHITE);
+        button.setForeground(TEXT_WHITE_SOFT.getColor());
         button.setFocusPainted(false);
         button.setBorderPainted(false);
         button.setOpaque(true);
