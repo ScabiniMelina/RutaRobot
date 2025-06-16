@@ -1,7 +1,7 @@
 # Ruta del Robot - Simulación de Planta Energética
 
 ## Integrantes
-- **Mayra Rossi** (35.366.464) - Maya.rossi03@gmail.com
+- **Mayra Rossi** (35.366.464) - Mayra.rossi03@gmail.com
 - **Melina Scabini** (44.756.058) - Melina.Scabini@gmail.com
 
 ## Profesores
